@@ -39,7 +39,7 @@ public class JmsActionInputDescriptorPanel extends AbstractActionInputDescriptio
         table.setWidget(3, 1, username);
 
         table.setWidget(4, 0, new HTML("<b>Пароль:</b>"));
-        table.setWidget(4, 1, username);
+        table.setWidget(4, 1, password);
 
     }
 

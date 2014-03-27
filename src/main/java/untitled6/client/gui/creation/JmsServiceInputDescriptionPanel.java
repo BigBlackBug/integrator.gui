@@ -17,25 +17,23 @@ import java.util.Map;
 public class JmsServiceInputDescriptionPanel extends Composite
         implements Creator<EndpointDescriptor> {
 
+    private final FlexTable table = new FlexTable();
+
     private final TextBox cfTB;
-
-    private final HorizontalPanel mainPanel;
-
-    private final VerticalPanel jndiPanel;
 
     private List<JndiInputPanel> jndiPanels = new ArrayList<>();
 
     public JmsServiceInputDescriptionPanel() {
-        mainPanel = new HorizontalPanel();
-        jndiPanel = new VerticalPanel();
-        mainPanel.add(new HTML("<b>connectionfactory:</b>"));
+
         cfTB = new TextBox();
-        mainPanel.add(cfTB);
-        mainPanel.add(new HTML("<b>JNDI:</b>"));
-        jndiPanel.add(new JndiInputPanel());
-        mainPanel.add(jndiPanel);
-        mainPanel.add(new Button("addprop",new Handler()));
-        initWidget(mainPanel);
+        cfTB.setWidth("100%");
+        table.setWidget(0, 0, new HTML("<b>ConnectionFactory:</b>"));
+        table.setWidget(0, 1, cfTB);
+        table.setWidget(1, 0, new Button("Добавить настройку JNDI", new Handler()));
+        table.getFlexCellFormatter().setColSpan(1, 0, 2);
+        table.setCellSpacing(2);
+        initWidget(table);
+        setWidth("100%");
     }
 
     @Override
@@ -53,8 +51,15 @@ public class JmsServiceInputDescriptionPanel extends Composite
 
         @Override
         public void onClick(ClickEvent event) {
-            JndiInputPanel newPanel = new JndiInputPanel();
-            jndiPanel.add(newPanel);
+            JndiInputPanel newPanel = new JndiInputPanel(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    table.removeRow(table.getRowCount()-1);
+                    jndiPanels.remove(jndiPanels.size()-1);
+                }
+            });
+            table.setWidget(3 + jndiPanels.size(), 0, newPanel);
+            table.getFlexCellFormatter().setColSpan(3 + jndiPanels.size(), 0, 2);
             jndiPanels.add(newPanel);
         }
     }

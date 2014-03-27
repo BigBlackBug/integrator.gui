@@ -63,7 +63,6 @@ public class testmodule implements EntryPoint {
 				errorLabel.setText("");
 				final String textToServer = nameField.getText();
 				// Then, we send the input to the server.
-				sendButton.setEnabled(false);
 				textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
 
@@ -80,8 +79,6 @@ public class testmodule implements EntryPoint {
 									public void onSuccess(ResponseDTO<List<ServiceDTO>> result) {
 										List<ServiceDTO> services =
 												result.getResponse().getResponseValue();
-										sendButton.setEnabled(true);
-//                                        RootPanel.get("mainTable").setVisible(true);
                                         ActionsPanel actionsPanel = new ActionsPanel();
                                         RootPanel.get("actionsContainer").add(actionsPanel);
                                         RootPanel.get("servicesContainer").add(

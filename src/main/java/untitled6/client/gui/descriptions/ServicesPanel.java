@@ -56,7 +56,7 @@ public class ServicesPanel extends Composite {
                             @Override
                             public void onSuccess(ResponseDTO<RegistrationResultDTO> result) {
                                 PopupPanel widgets = new PopupPanel(true,false);
-                                widgets.setWidget(new Label("OKAYREG"));
+                                widgets.setWidget(new Label("Сервис зареган"));
                                 widgets.center();
                                 service.getServiceList(
                                         new IntegratorPacket<Void, DestinationDescriptor>(),

@@ -37,51 +37,7 @@ public class ActionsPanel extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 new AddActionDialog(fullService.getEndpoint().getEndpointType(),
-                                    new CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
-                                        @Override
-                                        public void onCreated(
-                                                ActionRegistrationDTO<ActionDescriptor> value) {
-                                            final ServiceDTO serviceDTO =
-                                                    new ServiceDTO(fullService.getServiceName(),
-                                                                   fullService.getEndpoint()
-                                                                           .getEndpointType()
-                                                    );
-                                            AddActionDTO<ActionDescriptor> addActionDTO =
-                                                    new AddActionDTO<>(serviceDTO, value);
-                                            service.addAction(new IntegratorPacket<>(addActionDTO),
-                                                              new GenericCallback<ResponseDTO<Void>>(
-                                                                      "ADDACTION") {
-                                                                  @Override
-                                                                  public void onSuccess(
-                                                                          ResponseDTO<Void> result) {
-                                                                      PopupPanel widgets =
-                                                                              new PopupPanel(true,
-                                                                                             false);
-                                                                      widgets.setWidget(
-                                                                              new Label("OKAYADD"));
-                                                                      widgets.center();
-                                                                      service.getSupportedActions(
-                                                                              new IntegratorPacket<>(
-                                                                                      serviceDTO),
-                                                                              new GenericCallback<ResponseDTO<List<
-                                                                                      ActionEndpointDTO<ActionDescriptor>>>>(
-                                                                                      "getsuppactions") {
-                                                                                  @Override
-                                                                                  public void onSuccess(
-                                                                                          ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
-                                                                                      setAllActions(
-                                                                                              result.getResponse()
-                                                                                                      .getResponseValue()
-                                                                                                   );
-                                                                                  }
-                                                                              }
-                                                                                                 );
-                                                                  }
-                                                              }
-                                                             );
-                                        }
-                                    }
-                ).center();
+                                    new ActionCreatedListener()).center();
             }
         });
         Button removeAction = new Button("-");
@@ -105,7 +61,6 @@ public class ActionsPanel extends Composite {
 
     public void setActions(FullServiceDTO<ActionDescriptor> service) {
         this.fullService = service;
-//        this.titleLabel.setText("Actions of " + service.getServiceName());
         setAllActions(service.getActions());
     }
 
@@ -128,10 +83,49 @@ public class ActionsPanel extends Composite {
         infoPanel.add(new ActionDescriptorPanel(actions.get(index)));
     }
 
+    private class ActionCreatedListener implements
+            CreationListener<ActionRegistrationDTO<ActionDescriptor>> {
 
-    public ActionEndpointDTO<ActionDescriptor> getSelected(){
-        int selectedIndex = listBox.getSelectedIndex();
-        return actions.get(selectedIndex);
+        @Override
+        public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
+            final ServiceDTO serviceDTO =
+                    new ServiceDTO(fullService.getServiceName(),
+                                   fullService.getEndpoint()
+                                           .getEndpointType()
+                    );
+            AddActionDTO<ActionDescriptor> addActionDTO =
+                    new AddActionDTO<>(serviceDTO, value);
+            service.addAction(new IntegratorPacket<>(addActionDTO),
+                              new RefillPanelsCallback(serviceDTO));
+        }
+    }
+
+    private class RefillPanelsCallback extends GenericCallback<ResponseDTO<Void>> {
+
+        private final ServiceDTO serviceDTO;
+
+        protected RefillPanelsCallback(ServiceDTO serviceDTO) {
+            super("ADDACTION");
+            this.serviceDTO = serviceDTO;
+        }
+
+        @Override
+        public void onSuccess(ResponseDTO<Void> result) {
+            PopupPanel widgets = new PopupPanel(true, false);
+            widgets.setWidget(new Label("Действие добавлено"));
+            widgets.center();
+            service.getSupportedActions(
+                    new IntegratorPacket<>(serviceDTO),
+                    new GenericCallback<ResponseDTO<
+                            List<ActionEndpointDTO<ActionDescriptor>>>>("getsuppactions") {
+                        @Override
+                        public void onSuccess(
+                                ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
+                            setAllActions(result.getResponse().getResponseValue());
+                        }
+                    }
+            );
+        }
     }
 
     private class ActionsListBoxClickHandler implements ClickHandler {

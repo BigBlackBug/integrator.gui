@@ -30,8 +30,6 @@ public class AddServiceDialog extends DialogBox {
 
     private final DeliverySettingsPanel deliverySettingsPanel;
 
-//    private final HorizontalPanel reallyMainPanel;
-
     private final ListBox addActionsLB;
 
     private Creator<EndpointDescriptor> inputDescCreator;
@@ -43,6 +41,7 @@ public class AddServiceDialog extends DialogBox {
         setText("Создание сервиса");
 
         serviceNamesTB = new TextBox();
+        serviceNamesTB.setWidth("100%");
         typesBox = new ListBox();
         typesBox.setVisibleItemCount(2);
         typesBox.addItem("HTTP");
@@ -51,7 +50,7 @@ public class AddServiceDialog extends DialogBox {
             @Override
             public void onClick(ClickEvent event) {
                 int selectedIndex = typesBox.getSelectedIndex();
-                table.removeRow(2);
+                table.removeCell(2,0);
                 if (selectedIndex == 0) {
                     inputDescCreator = new HttpServiceInputDescriptionPanel();
                     //fill table
@@ -67,7 +66,7 @@ public class AddServiceDialog extends DialogBox {
         typesBox.setSelectedIndex(0);
 
         deliverySettingsPanel = new DeliverySettingsPanel();
-        Button addActionButton = new Button("ADDACTIONS");
+        Button addActionButton = new Button("Накинуть ищо действий");
         addActionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -96,10 +95,11 @@ public class AddServiceDialog extends DialogBox {
             }
         });
         addActionsLB = new ListBox();
-        addActionsLB.setVisibleItemCount(10);
+        addActionsLB.setVisibleItemCount(5);
+        addActionsLB.setHeight("100%");
 
         HorizontalPanel buttonPanel = new HorizontalPanel();
-        Button createButton = new Button("Create", new ClickHandler() {
+        Button createButton = new Button("Создать", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
@@ -111,7 +111,7 @@ public class AddServiceDialog extends DialogBox {
                                                                        deliverySettingsDTO,actionDesctiprors));
             }
         });
-        Button closeButton = new Button("Close", new ClickHandler() {
+        Button closeButton = new Button("Не создать", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
@@ -127,10 +127,12 @@ public class AddServiceDialog extends DialogBox {
         dock.add(buttonPanel, DockPanel.SOUTH);
         dock.add(table,DockPanel.CENTER);
 
+//        table.setWidget(0,0,new HTML("<center><b>Название сервиса:</b>"));
         table.setWidget(0,0,new HTML("<b>Название сервиса:</b>"));
         table.setWidget(0,1,serviceNamesTB);
         table.setWidget(1,0,new HTML("<b>Тип сервиса:</b>"));
         table.setWidget(1,1,typesBox);
+        typesBox.setWidth("100%");
         table.setWidget(2,0,(Composite)inputDescCreator);
         table.getFlexCellFormatter().setColSpan(2,0,2);
         table.setWidget(0,2,new HTML("<b>Действия:</b>"));

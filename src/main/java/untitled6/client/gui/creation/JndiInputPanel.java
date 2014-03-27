@@ -1,8 +1,7 @@
 package untitled6.client.gui.creation;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 
 /**
  * Created by e.shahmaev on 19.03.14.
@@ -13,13 +12,17 @@ public class JndiInputPanel extends Composite implements Creator<JndiItemPair> {
 
     private final TextBox propNameTB;
 
-    public JndiInputPanel(){
-        HorizontalPanel panel = new HorizontalPanel();
+    public JndiInputPanel(ClickHandler buttonHandler) {
+        FlexTable table = new FlexTable();
         this.propNameTB = new TextBox();
         this.propValueTB = new TextBox();
-        panel.add(propNameTB);
-        panel.add(propValueTB);
-        initWidget(panel);
+        table.setWidget(0, 0, new HTML("<b>Ключ:</b>"));
+        table.setWidget(0, 1, propNameTB);
+        table.setWidget(1, 0, new HTML("<b>Значение:</b>"));
+        table.setWidget(1, 1, propValueTB);
+        table.setWidget(0, 2, new Button("Убрать", buttonHandler));
+        table.getFlexCellFormatter().setRowSpan(0, 2, 2);
+        initWidget(table);
     }
 
     @Override
