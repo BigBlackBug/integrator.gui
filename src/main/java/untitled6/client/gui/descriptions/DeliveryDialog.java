@@ -59,6 +59,7 @@ public class DeliveryDialog extends DialogBox {
         }
         if (actionsLB.getItemCount() != 0) {
             fillServicesLB(0);
+            actionsLB.setSelectedIndex(0);
         }
         actionsLB.addClickHandler(new ClickHandler() {
             @Override

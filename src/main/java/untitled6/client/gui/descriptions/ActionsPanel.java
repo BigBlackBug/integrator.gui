@@ -115,15 +115,15 @@ public class ActionsPanel extends Composite {
             widgets.setWidget(new Label("Действие добавлено"));
             widgets.center();
             service.getSupportedActions(
-                    new IntegratorPacket<>(serviceDTO),
-                    new GenericCallback<ResponseDTO<
-                            List<ActionEndpointDTO<ActionDescriptor>>>>("getsuppactions") {
-                        @Override
-                        public void onSuccess(
-                                ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
-                            setAllActions(result.getResponse().getResponseValue());
-                        }
+                new IntegratorPacket<>(serviceDTO),
+                new GenericCallback<ResponseDTO<
+                        List<ActionEndpointDTO<ActionDescriptor>>>>("getsuppactions") {
+                    @Override
+                    public void onSuccess(
+                            ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
+                        setAllActions(result.getResponse().getResponseValue());
                     }
+                }
             );
         }
     }

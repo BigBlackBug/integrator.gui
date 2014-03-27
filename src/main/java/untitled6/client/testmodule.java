@@ -63,9 +63,8 @@ public class testmodule implements EntryPoint {
 				errorLabel.setText("");
 				final String textToServer = nameField.getText();
 				// Then, we send the input to the server.
-				textToServerLabel.setText(textToServer);
+                textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
-
 				String text = portField.getText();
 				int i = Integer.parseInt(text);
 				GenericCallback<Void> callback = new GenericCallback<Void>("INIT") {

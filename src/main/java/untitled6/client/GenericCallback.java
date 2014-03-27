@@ -29,13 +29,11 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
 		dialogBox.setText("Remote Procedure Call");
 		dialogBox.setAnimationEnabled(true);
 		final Button closeButton = new Button("Close");
-		// Add a handler to close the DialogBox
 		closeButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
 			}
 		});
-		// We can set the id of a widget by accessing its Element
 		closeButton.getElement().setId("closeButton");
 		VerticalPanel dialogVPanel = new VerticalPanel();
 		dialogVPanel.addStyleName("dialogVPanel");
@@ -56,7 +54,8 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
 
 	@Override
 	public void onFailure(Throwable caught) {
-        serverMessageLabel.setHTML(caught.getCause().toString());
-		dialogBox.center();
+        Throwable cause = caught.getCause();
+        serverMessageLabel.setHTML(cause != null ? cause.toString() : caught.toString());
+        dialogBox.center();
 	}
 }
