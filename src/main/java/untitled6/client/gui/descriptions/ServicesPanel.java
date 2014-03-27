@@ -1,0 +1,128 @@
+package untitled6.client.gui.descriptions;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
+import com.icl.integrator.dto.FullServiceDTO;
+import com.icl.integrator.dto.IntegratorPacket;
+import com.icl.integrator.dto.ResponseDTO;
+import com.icl.integrator.dto.ServiceDTO;
+import com.icl.integrator.dto.destination.DestinationDescriptor;
+import com.icl.integrator.dto.registration.ActionDescriptor;
+import com.icl.integrator.dto.registration.RegistrationResultDTO;
+import com.icl.integrator.dto.registration.TargetRegistrationDTO;
+import untitled6.client.GenericCallback;
+import untitled6.client.GreetingServiceAsync;
+import untitled6.client.gui.CreationListener;
+import untitled6.client.gui.creation.dialog.AddServiceDialog;
+
+import java.util.List;
+
+public class ServicesPanel extends Composite {
+
+    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
+
+    private final ActionsPanel actionsPanel;
+
+    private final VerticalPanel infoPanel;
+
+    private final ListBox list;
+
+    private List<ServiceDTO> services;
+
+    public ServicesPanel(List<ServiceDTO> aservices,
+                         final ActionsPanel actionsPanel) {
+        this.list = new ListBox();
+        list.setVisibleItemCount(10);
+        list.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                refillViews(list.getSelectedIndex());
+            }
+        });
+        refresh(aservices);
+        this.actionsPanel = actionsPanel;
+        HorizontalPanel mainPanel = new HorizontalPanel();
+        VerticalPanel leftPanel = new VerticalPanel();
+        HorizontalPanel buttonsPanel = new HorizontalPanel();
+        Button addServiceButton = new Button("+");
+        addServiceButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new AddServiceDialog(new CreationListener<TargetRegistrationDTO<ActionDescriptor>>() {
+                    @Override
+                    public void onCreated(TargetRegistrationDTO<ActionDescriptor> value) {
+                        service.registerService(
+                        new IntegratorPacket<>(value),
+                        new GenericCallback<ResponseDTO<RegistrationResultDTO>>("a") {
+                            @Override
+                            public void onSuccess(ResponseDTO<RegistrationResultDTO> result) {
+                                PopupPanel widgets = new PopupPanel(true,false);
+                                widgets.setWidget(new Label("OKAYREG"));
+                                widgets.center();
+                                service.getServiceList(
+                                        new IntegratorPacket<Void, DestinationDescriptor>(),
+                                        new GenericCallback<ResponseDTO<List<ServiceDTO>>>("GSL") {
+                                            @Override
+                                            public void onSuccess(ResponseDTO<List<ServiceDTO>> result) {
+                                                List<ServiceDTO> responseValue =
+                                                        result.getResponse().getResponseValue();
+
+                                                refresh(responseValue);
+                                            }
+                                        });
+                            }
+                        });
+                    }
+                }).center();
+            }
+        });
+        Button removeServiceButton = new Button("-");
+        removeServiceButton.setEnabled(false);
+        buttonsPanel.add(addServiceButton);
+        buttonsPanel.add(removeServiceButton);
+        leftPanel.add(buttonsPanel);
+
+        leftPanel.add(list);
+        mainPanel.add(leftPanel);
+        infoPanel = new VerticalPanel();
+        mainPanel.add(infoPanel);
+        mainPanel.setBorderWidth(1);
+        mainPanel.setSpacing(2);
+        initWidget(mainPanel);
+    }
+
+    private void refresh(List<ServiceDTO> services) {
+        this.services = services;
+        list.clear();
+        for (ServiceDTO service : services) {
+            list.addItem(service.getServiceName());
+        }
+        if (!services.isEmpty()) {
+            list.setSelectedIndex(0);
+            refillViews(0);
+        }
+    }
+
+    public void refillViews(int index) {
+        ServiceDTO serviceDTO = services.get(index);
+        service.getServiceInfo(new IntegratorPacket<>(serviceDTO),
+           new GenericCallback<ResponseDTO<FullServiceDTO<ActionDescriptor>>>(
+                   "FULLSR") {
+               @Override
+               public void onSuccess(
+                       ResponseDTO<FullServiceDTO<ActionDescriptor>> result) {
+                   if (result.isSuccess()) {
+                       FullServiceDTO<ActionDescriptor>
+                               fullservice =
+                               result.getResponse().getResponseValue();
+                       actionsPanel.setActions(fullservice);
+                       infoPanel.clear();
+                       infoPanel.add(new ServiceDescriptionPanel(fullservice));
+                   } else {
+                       onFailure(new RuntimeException(result.getError().getDeveloperMessage()));
+                   }
+               }
+           });
+    }
+}
