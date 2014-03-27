@@ -32,8 +32,6 @@ public class DeliveryDialog extends DialogBox {
 
     private final TextArea deliveryDataTA;
 
-    private final HorizontalPanel lbPanel;
-
     private final CheckBox isAutoDetectCB;
 
     private final EnumListBox<DeliveryPacketType> deliveryTypesLB;
@@ -47,13 +45,13 @@ public class DeliveryDialog extends DialogBox {
                           final CreationListener<DeliveryDTO> creationListener) {
         setModal(true);
         DockPanel dockPanel = new DockPanel();
+        dockPanel.add(new HTML("<center>Диалоги о <s>животных</s> доставке</center>"),
+                      DockPanel.NORTH);
         this.actionToServiceMap = actionToService;
         actionsLB = new ListBox();
-        actionsLB.setTitle("select action");
         actionsLB.setVisibleItemCount(10);
         actionsLB.setMultipleSelect(false);
         servicesLB = new ListBox();
-        servicesLB.setTitle("select services");
         servicesLB.setVisibleItemCount(10);
         servicesLB.setMultipleSelect(true);
         for (DeliveryActionsDTO action : actionToService) {
@@ -69,11 +67,10 @@ public class DeliveryDialog extends DialogBox {
                 fillServicesLB(selectedIndex);
             }
         });
-        lbPanel = new HorizontalPanel();
-        lbPanel.add(actionsLB);
-        lbPanel.add(servicesLB);
+
         HorizontalPanel buttonPanel = new HorizontalPanel();
-        Button createButton = new Button("Send", new ClickHandler() {
+        buttonPanel.setSpacing(5);
+        Button createButton = new Button("Доставить!", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 DeliveryDTO value;
@@ -84,7 +81,7 @@ public class DeliveryDialog extends DialogBox {
                     jsonValue = JSONParser.parseStrict(deliveryData);
                 }catch(Exception ex){
                     PopupPanel widgets = new PopupPanel(true,false);
-                    widgets.setWidget(new Label("invalid json"));
+                    widgets.setWidget(new Label("У Вас кривой JSON"));
                     widgets.center();
                     return;
                 }
@@ -109,18 +106,18 @@ public class DeliveryDialog extends DialogBox {
                     }
                     if(destinations.isEmpty()){
                         PopupPanel widgets = new PopupPanel(true,false);
-                        widgets.setWidget(new Label("SELECT DESTINATIONS"));
+                        widgets.setWidget(new Label("Выбери сервисы"));
                         widgets.center();
                         return;
                     }
                     requestDataDTO = new RequestDataDTO(DeliveryPacketType.UNDEFINED, data);
-                    value = new DeliveryDTO(selectedAction, destinations, requestDataDTO,dd);
+                    value = new DeliveryDTO(requestDataDTO, dd, selectedAction, destinations);
                 }
                 creationListener.onCreated(value);
                 hide();
             }
         });
-        Button closeButton = new Button("Close", new ClickHandler() {
+        Button closeButton = new Button("Не доставлять", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
@@ -130,77 +127,66 @@ public class DeliveryDialog extends DialogBox {
         deliveryTypesLB = new EnumListBox<>(DeliveryPacketType.class, DeliveryPacketType.UNDEFINED);
         buttonPanel.add(closeButton);
         buttonPanel.add(createButton);
+        final FlexTable flexTb = new FlexTable();
+        flexTb.setBorderWidth(3);
         isAutoDetectCB = new CheckBox("Автоопределение таргета");
-        isAutoDetectCB.setValue(false);
-        deliveryTypesLB.setVisible(false);
-        lbPanel.setVisible(true);
         isAutoDetectCB.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                lbPanel.setVisible(!isAutoDetectCB.getValue());
-                deliveryTypesLB.setVisible(isAutoDetectCB.getValue());
+//                lbPanel.setVisible(!isAutoDetectCB.getValue());
+//                deliveryTypesLB.setVisible(isAutoDetectCB.getValue());
+                Boolean autoDetectionMode = isAutoDetectCB.getValue();
+                flexTb.removeAllRows();
+                if (autoDetectionMode) {
+                    flexTb.setWidget(0, 0, isAutoDetectCB);
+                    flexTb.getFlexCellFormatter().setColSpan(0, 0, 2);
+                    flexTb.setWidget(1, 0, deliveryTypesLB);
+                    flexTb.setWidget(1, 1, deliveryDataTA);
+                    flexTb.getFlexCellFormatter().setColSpan(1, 1, 2);
+                    flexTb.setWidget(2, 0, integratorResponseCB);
+                    flexTb.getFlexCellFormatter().setColSpan(2, 0, 2);
+                } else {
+                    flexTb.setWidget(0, 0, isAutoDetectCB);
+                    flexTb.getFlexCellFormatter().setColSpan(0, 0, 3);
+                    flexTb.setWidget(1, 0, actionsLB);
+                    flexTb.setWidget(1, 1, servicesLB);
+                    flexTb.setWidget(1, 2, deliveryDataTA);
+                    flexTb.setWidget(2, 0, integratorResponseCB);
+                    flexTb.getFlexCellFormatter().setColSpan(2, 0, 3);
+                }
             }
         });
-        HorizontalPanel mainPanel = new HorizontalPanel();
-//        mainPanel.add(new HTML("<center>Куда шлём</center>"));
+        isAutoDetectCB.setValue(false);
+        isAutoDetectCB.setWidth("100%");
+        isAutoDetectCB.setHeight("100%");
+        flexTb.setWidget(0, 0, isAutoDetectCB);
+        flexTb.getFlexCellFormatter().setColSpan(0, 0, 3);
+        flexTb.setWidget(1, 0, actionsLB);
+        flexTb.setWidget(1, 1, servicesLB);
         deliveryDataTA = new TextArea();
-        mainPanel.add(lbPanel);
-        mainPanel.add(deliveryDataTA);
-        mainPanel.add(deliveryTypesLB);
+        flexTb.setWidget(1, 2, deliveryDataTA);
         integratorResponseCB = new CheckBox("Шлём куда-нить ответ от таргета?");
         integratorResponseCB.setValue(false);
+        responseHandlerSelectorPanel = new ResponseHandlerSelectorPanel(services);
         integratorResponseCB.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Boolean selected = integratorResponseCB.getValue();
-                responseHandlerSelectorPanel.setVisible(selected);
+                if (selected) {
+                    flexTb.setWidget(3, 0, responseHandlerSelectorPanel);
+                    flexTb.getFlexCellFormatter().setColSpan(3, 0, 3);
+                } else {
+                    flexTb.removeRow(3);
+                }
             }
         });
-        responseHandlerSelectorPanel = new ResponseHandlerSelectorPanel(services);
-        responseHandlerSelectorPanel.setVisible(false);
-        VerticalPanel really = new VerticalPanel();
-        really.add(mainPanel);
-        really.add(integratorResponseCB);
-        really.add(responseHandlerSelectorPanel);
-
-        dockPanel.add(really, DockPanel.CENTER);
-        dockPanel.add(isAutoDetectCB, DockPanel.NORTH);
+        flexTb.setWidget(2, 0, integratorResponseCB);
+        flexTb.getFlexCellFormatter().setColSpan(2, 0, 3);
+        dockPanel.add(flexTb, DockPanel.CENTER);
         dockPanel.add(buttonPanel, DockPanel.SOUTH);
         setWidget(dockPanel);
     }
 
-//    private void initGui(){
-//        final FlexTable flexTb = new FlexTable();
-//        flexTb.setBorderWidth(3);
-//        CheckBox toast = new CheckBox("TOAddddddddddddddddddddddST");
-//        toast.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-//            public void onValueChange(ValueChangeEvent<Boolean> event) {
-//                widget10 = flexTb.getWidget(1, 0);
-//                flexTb.getWidget(1,1).setVisible(event.getValue());
-////				flexTb.getFlexCellFormatter().setColSpan(1, 1, event.getValue()?1:2);
-//            }
-//        });
-////		Button toast =new Button("234");
-//        toast.setWidth("100%");
-//        toast.setHeight("100%");
-//        flexTb.setWidget(0,0, toast);
-//        flexTb.getFlexCellFormatter().setColSpan(0, 0, 3);
-////		ListBox lb = new ListBox(); 1 0 2
-////		lb.setVisibleItemCount(10);
-//        ListBox listBox1 = getListBox();
-//        listBox1.setHeight("100%");
-//        flexTb.setWidget(1, 0, listBox1);
-//        ListBox listBox = getListBox();
-//        listBox.addItem("1231231232");
-//        flexTb.setWidget(1,1, listBox);
-//        flexTb.setWidget(1, 2, new TextArea());
-//        flexTb.setWidget(2, 0, new CheckBox("TOAST2"));
-//        flexTb.getFlexCellFormatter().setColSpan(2, 0, 3);
-//        flexTb.setWidget(3, 0,  getListBox());
-//        flexTb.setWidget(3, 1,  getListBox());
-//        flexTb.getFlexCellFormatter().setColSpan(3, 0, 2);
-//        RootPanel.get().add(flexTb);
-//    }
     private void fillServicesLB(int selectedIndex) {
         List<ServiceDTO> serviceDTOs = actionToServiceMap.get(selectedIndex).getServices();
         servicesLB.clear();

@@ -34,15 +34,69 @@ public class AddServiceDialog extends DialogBox {
 
     private final ListBox addActionsLB;
 
-    private final VerticalPanel mainPanel;
-
     private Creator<EndpointDescriptor> inputDescCreator;
 
     private List<ActionRegistrationDTO<ActionDescriptor>> actionDesctiprors =new ArrayList<>();
 
     public AddServiceDialog(final CreationListener<TargetRegistrationDTO<ActionDescriptor>>
                                     creationListener) {
-        setText("Sample DialogBox");
+        setText("Создание сервиса");
+
+        serviceNamesTB = new TextBox();
+        typesBox = new ListBox();
+        typesBox.setVisibleItemCount(2);
+        typesBox.addItem("HTTP");
+        typesBox.addItem("JMS");
+        typesBox.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                int selectedIndex = typesBox.getSelectedIndex();
+                table.removeRow(2);
+                if (selectedIndex == 0) {
+                    inputDescCreator = new HttpServiceInputDescriptionPanel();
+                    //fill table
+                } else {
+                    inputDescCreator = new JmsServiceInputDescriptionPanel();
+                    //fill table
+                }
+                table.setWidget(2,0,(Composite)inputDescCreator);
+                table.getFlexCellFormatter().setColSpan(2,0,2);
+            }
+        });
+        inputDescCreator = new HttpServiceInputDescriptionPanel();
+        typesBox.setSelectedIndex(0);
+
+        deliverySettingsPanel = new DeliverySettingsPanel();
+        Button addActionButton = new Button("ADDACTIONS");
+        addActionButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+            CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
+                    CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
+                        @Override
+                        public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
+                        //выкидываем actionPanel
+                            table.removeCell(0,3);
+                        if (value != null) {
+                            actionDesctiprors.add(value);
+                            addActionsLB.addItem(value.getAction().getActionName());
+                        }
+                        }
+                    };
+            int selectedIndex = typesBox.getSelectedIndex();
+            AddActionPanel actionPanel;
+            if (selectedIndex == 0) { //http
+                actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
+            } else {
+                actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
+            }
+                table.setWidget(0,3,actionPanel);
+                table.getFlexCellFormatter().setRowSpan(0,3,3);
+
+            }
+        });
+        addActionsLB = new ListBox();
+        addActionsLB.setVisibleItemCount(10);
 
         HorizontalPanel buttonPanel = new HorizontalPanel();
         Button createButton = new Button("Create", new ClickHandler() {
@@ -53,8 +107,8 @@ public class AddServiceDialog extends DialogBox {
                 EndpointDescriptor endpointDescriptor = inputDescCreator.create();
                 DeliverySettingsDTO deliverySettingsDTO = deliverySettingsPanel.create();
                 creationListener.onCreated(new TargetRegistrationDTO<>(serviceName,
-                                                                     endpointDescriptor,
-                                                                     deliverySettingsDTO,actionDesctiprors));
+                                                                       endpointDescriptor,
+                                                                       deliverySettingsDTO,actionDesctiprors));
             }
         });
         Button closeButton = new Button("Close", new ClickHandler() {
@@ -63,92 +117,27 @@ public class AddServiceDialog extends DialogBox {
                 hide();
             }
         });
-        HTML msg = new HTML("<center>Create service.</center>", true);
-
-//        reallyMainPanel = new HorizontalPanel();
-        final VerticalPanel addServicePanel = new VerticalPanel();
-        addServicePanel.add(new HTML("<br><b>ServiceName:</b>"));
-        serviceNamesTB = new TextBox();
-        addServicePanel.add(serviceNamesTB);
-        typesBox = new ListBox();
-        typesBox.setVisibleItemCount(2);
-        typesBox.addItem("HTTP");
-        typesBox.addItem("JMS");
-        final HorizontalPanel inputPanel = new HorizontalPanel();
-        typesBox.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                int selectedIndex = typesBox.getSelectedIndex();
-                if (selectedIndex == 0) {
-                    inputPanel.clear();
-                    inputDescCreator = new HttpServiceInputDescriptionPanel();
-                    inputPanel.add((Composite) inputDescCreator);
-                } else {
-                    inputPanel.clear();
-                    inputDescCreator = new JmsServiceInputDescriptionPanel();
-                    inputPanel.add((Composite) inputDescCreator);
-                }
-            }
-        });
-        inputDescCreator = new HttpServiceInputDescriptionPanel();
-        inputPanel.add((Composite)inputDescCreator);
-        typesBox.setSelectedIndex(0);
-        addServicePanel.add(typesBox);
-        addServicePanel.add(inputPanel);
-
-        deliverySettingsPanel = new DeliverySettingsPanel();
-        addServicePanel.add(deliverySettingsPanel);
-        Button addActionButton = new Button("ADDACTIONS");
-        addActionButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-
-                CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
-                        CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
-                            @Override
-                            public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
-                                //выкидываем actionPanel
-                                mainPanel.remove(mainPanel.getWidgetCount() - 1);
-                                if (value != null) {
-                                    actionDesctiprors.add(value);
-                                    addActionsLB.addItem(value.getAction().getActionName());
-                                }
-                            }
-                        };
-                int selectedIndex = typesBox.getSelectedIndex();
-                AddActionPanel actionPanel;
-                if (selectedIndex == 0) { //http
-                    actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
-                } else {
-                    actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
-                }
-
-                mainPanel.add(actionPanel);
-            }
-        });
-        addActionsLB = new ListBox();
-        addActionsLB.setVisibleItemCount(10);
-        addServicePanel.add(addActionButton);
-//        reallyMainPanel.add(mainPanel);
-//        reallyMainPanel.add(addActionsLB);
-
-
-        mainPanel = new VerticalPanel();
-        HorizontalPanel topPanel = new HorizontalPanel();
-        topPanel.add(addServicePanel);
-        topPanel.add(addActionsLB);
-        mainPanel.add(topPanel);
-        DockPanel dock = new DockPanel();
-        dock.setSpacing(4);
-
+        buttonPanel.setSpacing(3);
         buttonPanel.add(closeButton);
         buttonPanel.add(createButton);
+        buttonPanel.add(addActionButton);
+
+        DockPanel dock = new DockPanel();
+        dock.setSpacing(4);
         dock.add(buttonPanel, DockPanel.SOUTH);
-        dock.add(msg, DockPanel.NORTH);
-        dock.add(mainPanel,DockPanel.CENTER);
-        dock.setCellHorizontalAlignment(buttonPanel, DockPanel.ALIGN_RIGHT);
-        dock.setWidth("100%");
+        dock.add(table,DockPanel.CENTER);
+
+        table.setWidget(0,0,new HTML("<b>Название сервиса:</b>"));
+        table.setWidget(0,1,serviceNamesTB);
+        table.setWidget(1,0,new HTML("<b>Тип сервиса:</b>"));
+        table.setWidget(1,1,typesBox);
+        table.setWidget(2,0,(Composite)inputDescCreator);
+        table.getFlexCellFormatter().setColSpan(2,0,2);
+        table.setWidget(0,2,new HTML("<b>Действия:</b>"));
+        addActionsLB.setWidth("100%");
+        table.setWidget(1,2,addActionsLB);
+        table.getFlexCellFormatter().setRowSpan(1,2,2);
         setWidget(dock);
     }
-
+    FlexTable table = new FlexTable();
 }

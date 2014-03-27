@@ -15,7 +15,6 @@ import untitled6.client.GenericCallback;
 import untitled6.client.GreetingServiceAsync;
 import untitled6.client.gui.CreationListener;
 import untitled6.client.gui.creation.dialog.AddActionDialog;
-import untitled6.client.gui.creation.dialog.EditActionDialog;
 
 import java.util.List;
 
@@ -32,74 +31,76 @@ public class ActionsPanel extends Composite {
     private FullServiceDTO<ActionDescriptor> fullService;
 
     public ActionsPanel() {
-        HorizontalPanel mainPanel = new HorizontalPanel();
-        VerticalPanel leftPanel = new VerticalPanel();
-        HorizontalPanel buttonsPanel = new HorizontalPanel();
-        Button addServiceButton = new Button("+");
-        addServiceButton.addClickHandler(new ClickHandler() {
+        Button addActionButton = new Button("+");
+        addActionButton.setWidth("100%");
+        addActionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 new AddActionDialog(fullService.getEndpoint().getEndpointType(),
-                    new CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
-                        @Override
-                        public void onCreated(
-                                ActionRegistrationDTO<ActionDescriptor> value) {
-                            final ServiceDTO serviceDTO = new ServiceDTO(fullService.getServiceName(),
-                                                                   fullService.getEndpoint()
-                                                                           .getEndpointType());
-                            AddActionDTO<ActionDescriptor> addActionDTO =
-                                    new AddActionDTO<>(serviceDTO, value);
-                            service.addAction(new IntegratorPacket<>(addActionDTO),
-                                              new GenericCallback<ResponseDTO<Void>>("ADDACTION") {
-                                @Override
-                                public void onSuccess(ResponseDTO<Void> result) {
-                                    PopupPanel widgets = new PopupPanel(true,false);
-                                    widgets.setWidget(new Label("OKAYADD"));
-                                    widgets.center();
-                                    service.getSupportedActions(
-                                            new IntegratorPacket<>(serviceDTO),
-                                            new GenericCallback<ResponseDTO<List<
-                                                    ActionEndpointDTO<ActionDescriptor>>>>("getsuppactions") {
+                                    new CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
                                         @Override
-                                        public void onSuccess(
-                                                ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
-                                                    setAllActions(result.getResponse().getResponseValue());
+                                        public void onCreated(
+                                                ActionRegistrationDTO<ActionDescriptor> value) {
+                                            final ServiceDTO serviceDTO =
+                                                    new ServiceDTO(fullService.getServiceName(),
+                                                                   fullService.getEndpoint()
+                                                                           .getEndpointType()
+                                                    );
+                                            AddActionDTO<ActionDescriptor> addActionDTO =
+                                                    new AddActionDTO<>(serviceDTO, value);
+                                            service.addAction(new IntegratorPacket<>(addActionDTO),
+                                                              new GenericCallback<ResponseDTO<Void>>(
+                                                                      "ADDACTION") {
+                                                                  @Override
+                                                                  public void onSuccess(
+                                                                          ResponseDTO<Void> result) {
+                                                                      PopupPanel widgets =
+                                                                              new PopupPanel(true,
+                                                                                             false);
+                                                                      widgets.setWidget(
+                                                                              new Label("OKAYADD"));
+                                                                      widgets.center();
+                                                                      service.getSupportedActions(
+                                                                              new IntegratorPacket<>(
+                                                                                      serviceDTO),
+                                                                              new GenericCallback<ResponseDTO<List<
+                                                                                      ActionEndpointDTO<ActionDescriptor>>>>(
+                                                                                      "getsuppactions") {
+                                                                                  @Override
+                                                                                  public void onSuccess(
+                                                                                          ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
+                                                                                      setAllActions(
+                                                                                              result.getResponse()
+                                                                                                      .getResponseValue()
+                                                                                                   );
+                                                                                  }
+                                                                              }
+                                                                                                 );
+                                                                  }
+                                                              }
+                                                             );
                                         }
-                                    });
-                                }
-                            });
-                        }
-                    }).center();
+                                    }
+                ).center();
             }
         });
         Button removeAction = new Button("-");
+        removeAction.setWidth("100%");
         removeAction.setEnabled(false);
-        Button editActionButton = new Button("edit action");
-        editActionButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                new EditActionDialog(fullService.getEndpoint().getEndpointType(),
-                 new CreationListener<ActionEndpointDTO<ActionDescriptor>>() {
-                    @Override
-                    public void onCreated(ActionEndpointDTO<ActionDescriptor> value) {
-
-                    }
-                });
-            }
-        });
-        buttonsPanel.add(addServiceButton);
-        buttonsPanel.add(removeAction);
-        leftPanel.add(buttonsPanel);
         listBox = new ListBox();
         listBox.setVisibleItemCount(10);
-        listBox.addClickHandler(new CH());
-        leftPanel.add(listBox);
-        mainPanel.add(leftPanel);
+        listBox.addClickHandler(new ActionsListBoxClickHandler());
         infoPanel = new VerticalPanel();
-        mainPanel.add(infoPanel);
-        mainPanel.setBorderWidth(1);
-        mainPanel.setSpacing(2);
-        initWidget(mainPanel);
+
+        FlexTable table = new FlexTable();
+        table.setWidget(0, 0, addActionButton);
+        table.setWidget(0, 1, removeAction);
+        table.setWidget(1, 0, listBox);
+        table.getFlexCellFormatter().setColSpan(1, 0, 2);
+        table.setWidget(0, 2, infoPanel);
+        table.getFlexCellFormatter().setRowSpan(0, 2, 3);
+        table.setBorderWidth(1);
+        initWidget(table);
     }
 
     public void setActions(FullServiceDTO<ActionDescriptor> service) {
@@ -133,7 +134,7 @@ public class ActionsPanel extends Composite {
         return actions.get(selectedIndex);
     }
 
-    private class CH implements ClickHandler {
+    private class ActionsListBoxClickHandler implements ClickHandler {
 
         @Override
         public void onClick(ClickEvent clickEvent) {

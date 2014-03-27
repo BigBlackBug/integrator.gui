@@ -39,7 +39,7 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
 		closeButton.getElement().setId("closeButton");
 		VerticalPanel dialogVPanel = new VerticalPanel();
 		dialogVPanel.addStyleName("dialogVPanel");
-		dialogVPanel.add(new HTML("<br><b>Message:</b>"));
+		dialogVPanel.add(new HTML("<b>Message:</b>"));
 		final HTML serverResponseLabel = new HTML();
 		serverResponseLabel.addStyleName("serverResponseLabelError");
 		serverResponseLabel.setHTML(message);

@@ -42,10 +42,8 @@ public class ServicesPanel extends Composite {
         });
         refresh(aservices);
         this.actionsPanel = actionsPanel;
-        HorizontalPanel mainPanel = new HorizontalPanel();
-        VerticalPanel leftPanel = new VerticalPanel();
-        HorizontalPanel buttonsPanel = new HorizontalPanel();
         Button addServiceButton = new Button("+");
+        addServiceButton.setWidth("100%");
         addServiceButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -79,17 +77,18 @@ public class ServicesPanel extends Composite {
         });
         Button removeServiceButton = new Button("-");
         removeServiceButton.setEnabled(false);
-        buttonsPanel.add(addServiceButton);
-        buttonsPanel.add(removeServiceButton);
-        leftPanel.add(buttonsPanel);
-
-        leftPanel.add(list);
-        mainPanel.add(leftPanel);
+        removeServiceButton.setWidth("100%");
         infoPanel = new VerticalPanel();
-        mainPanel.add(infoPanel);
-        mainPanel.setBorderWidth(1);
-        mainPanel.setSpacing(2);
-        initWidget(mainPanel);
+
+        FlexTable table = new FlexTable();
+        table.setWidget(0, 0, addServiceButton);
+        table.setWidget(0, 1, removeServiceButton);
+        table.setWidget(1, 0, list);
+        table.getFlexCellFormatter().setColSpan(1, 0, 2);
+        table.setWidget(0, 2, infoPanel);
+        table.getFlexCellFormatter().setRowSpan(0, 2, 3);
+        table.setBorderWidth(1);
+        initWidget(table);
     }
 
     private void refresh(List<ServiceDTO> services) {

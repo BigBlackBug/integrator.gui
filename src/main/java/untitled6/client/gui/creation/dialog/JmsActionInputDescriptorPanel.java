@@ -23,16 +23,24 @@ public class JmsActionInputDescriptorPanel extends AbstractActionInputDescriptio
 
     public JmsActionInputDescriptorPanel() {
         actionMethodLB = new EnumListBox<>(ActionMethod.class);
-        mainPanel.add(actionMethodLB);
-        mainPanel.add(new HTML("<br><b>queuname:</b>"));
-        queueName = new TextBox();
-        mainPanel.add(queueName);
-        mainPanel.add(new HTML("<br><b>username:</b>"));
-        username = new TextBox();
-        mainPanel.add(username);
-        mainPanel.add(new HTML("<br><b>pass:</b>"));
         password = new TextBox();
-        mainPanel.add(password);
+        password.setWidth("100%");
+        queueName = new TextBox();
+        queueName.setWidth("100%");
+        username = new TextBox();
+        username.setWidth("100%");
+        table.setWidget(1, 0, new HTML("<b>Тип действия:</b>"));
+        table.setWidget(1, 1, actionMethodLB);
+
+        table.setWidget(2, 0, new HTML("<b>Название очереди:</b>"));
+        table.setWidget(2, 1, queueName);
+
+        table.setWidget(3, 0, new HTML("<b>Имя пользователя:</b>"));
+        table.setWidget(3, 1, username);
+
+        table.setWidget(4, 0, new HTML("<b>Пароль:</b>"));
+        table.setWidget(4, 1, username);
+
     }
 
     public JmsActionInputDescriptorPanel(ActionEndpointDTO<QueueDTO> actionEndpointDTO){

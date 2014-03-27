@@ -20,8 +20,6 @@ public class ActionDisplayPanel extends Composite{
 
     private final VerticalPanel infoPanel;
 
-    private final Label titleLabel;
-
     private List<ActionEndpointDTO<ActionDescriptor>> actions;
 
     private String serviceName;
@@ -29,8 +27,6 @@ public class ActionDisplayPanel extends Composite{
     public ActionDisplayPanel() {
         HorizontalPanel mainPanel = new HorizontalPanel();
         VerticalPanel leftPanel = new VerticalPanel();
-        titleLabel = new Label("ACTIONS");
-        leftPanel.add(titleLabel);
         listBox = new ListBox();
         listBox.setVisibleItemCount(10);
         listBox.addClickHandler(new CH());
@@ -38,13 +34,11 @@ public class ActionDisplayPanel extends Composite{
         mainPanel.add(leftPanel);
         infoPanel = new VerticalPanel();
         mainPanel.add(infoPanel);
-        mainPanel.setBorderWidth(2);
         initWidget(mainPanel);
     }
 
     public void setActions(String service,List<ActionEndpointDTO<ActionDescriptor>> actions) {
         this.serviceName = service;
-        this.titleLabel.setText("Actions of " + service);
         setAllActions(actions);
     }
 

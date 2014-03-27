@@ -15,25 +15,25 @@ import untitled6.client.gui.creation.Creator;
  */
 public class AddActionPanel extends Composite{
 
-    private final CheckBox forceReigsterCB;
+    private final CheckBox forceRegisterCB;
 
     private Creator<ActionEndpointDTO<ActionDescriptor> > actionDescriptorCreator;
 
     public AddActionPanel(EndpointType endpointType, final
-    CreationListener<ActionRegistrationDTO<ActionDescriptor>>
-            creationListener) {
+    CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener) {
         DockPanel dock = new DockPanel();
         dock.setSpacing(4);
         HorizontalPanel buttonPanel = new HorizontalPanel();
-        Button createButton = new Button("Create", new ClickHandler() {
+        buttonPanel.setSpacing(3);
+        Button createButton = new Button("Добавить", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 ActionEndpointDTO<ActionDescriptor> action = actionDescriptorCreator.create();
-                boolean forceRegister = forceReigsterCB.getValue();
+                boolean forceRegister = forceRegisterCB.getValue();
                 creationListener.onCreated(new ActionRegistrationDTO<>(action, forceRegister));
             }
         });
-        Button closeButton = new Button("Close", new ClickHandler() {
+        Button closeButton = new Button("Не добавить", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 creationListener.onCreated(null);
@@ -42,19 +42,16 @@ public class AddActionPanel extends Composite{
         buttonPanel.add(closeButton);
         buttonPanel.add(createButton);
         dock.add(buttonPanel, DockPanel.SOUTH);
-        VerticalPanel mainPanel = new VerticalPanel();
         if (endpointType == EndpointType.HTTP) {
             actionDescriptorCreator = new HttpActionInputDescriptionPanel();
         } else {
             actionDescriptorCreator = new JmsActionInputDescriptorPanel();
         }
-        HorizontalPanel checkBOxPanle = new HorizontalPanel();
-        checkBOxPanle.add(new HTML("forceRegsiter"));
-        forceReigsterCB = new CheckBox();
-        checkBOxPanle.add(forceReigsterCB);
-        mainPanel.add(checkBOxPanle);
-        mainPanel.add((Composite) actionDescriptorCreator);
-        dock.add(mainPanel, DockPanel.CENTER);
+        forceRegisterCB = new CheckBox("Регать несмотря ни на что?");
+        FlexTable table = new FlexTable();
+        table.setWidget(0, 0, forceRegisterCB);
+        table.setWidget(1, 0, (Composite) actionDescriptorCreator);
+        dock.add(table, DockPanel.CENTER);
         setWidget(dock);
     }
 

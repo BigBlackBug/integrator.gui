@@ -20,10 +20,12 @@ public class HttpActionInputDescriptionPanel extends AbstractActionInputDescript
     public HttpActionInputDescriptionPanel() {
         super();
         actionMethodLB = new EnumListBox<>(ActionMethod.class);
-        mainPanel.add(actionMethodLB);
-        mainPanel.add(new HTML("<br><b>path:</b>"));
         pathTB = new TextBox();
-        mainPanel.add(pathTB);
+        pathTB.setWidth("100%");
+        table.setWidget(1, 0, new HTML("<b>Тип действия:</b>"));
+        table.setWidget(1, 1, actionMethodLB);
+        table.setWidget(2, 0, new HTML("<b>Путь к сервису:</b>"));
+        table.setWidget(2, 1, pathTB);
     }
 
     public HttpActionInputDescriptionPanel(ActionEndpointDTO<HttpActionDTO> actionEndpointDTO){

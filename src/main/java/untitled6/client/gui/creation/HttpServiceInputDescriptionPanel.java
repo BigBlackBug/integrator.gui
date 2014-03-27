@@ -1,8 +1,8 @@
 package untitled6.client.gui.creation;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.source.HttpEndpointDescriptorDTO;
@@ -18,15 +18,18 @@ public class HttpServiceInputDescriptionPanel extends Composite implements
     private final TextBox portTB;
 
     public HttpServiceInputDescriptionPanel() {
-        HorizontalPanel panel = new HorizontalPanel();
-
-        panel.add(new HTML("<br><b>Host:</b>"));
+        FlexTable table = new FlexTable();
         hostTB = new TextBox();
-        panel.add(hostTB);
-        panel.add(new HTML("<br><b>Port:</b>"));
+        hostTB.setWidth("100%");
         portTB = new TextBox();
-        panel.add(portTB);
-        initWidget(panel);
+        portTB.setWidth("100%");
+        table.setWidget(0, 0, new HTML("<b>Хост:</b>"));
+        table.setWidget(0, 1, hostTB);
+        table.setWidget(1, 0, new HTML("<b>Порт:</b>"));
+        table.setWidget(1, 1, portTB);
+
+        initWidget(table);
+        setWidth("100%");
     }
 
     @Override

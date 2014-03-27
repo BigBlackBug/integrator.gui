@@ -28,10 +28,10 @@ public class JmsServiceInputDescriptionPanel extends Composite
     public JmsServiceInputDescriptionPanel() {
         mainPanel = new HorizontalPanel();
         jndiPanel = new VerticalPanel();
-        mainPanel.add(new HTML("<br><b>connectionfactory:</b>"));
+        mainPanel.add(new HTML("<b>connectionfactory:</b>"));
         cfTB = new TextBox();
         mainPanel.add(cfTB);
-        mainPanel.add(new HTML("<br><b>JNDI:</b>"));
+        mainPanel.add(new HTML("<b>JNDI:</b>"));
         jndiPanel.add(new JndiInputPanel());
         mainPanel.add(jndiPanel);
         mainPanel.add(new Button("addprop",new Handler()));
