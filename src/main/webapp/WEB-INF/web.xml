@@ -8,7 +8,7 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>greetServlet</servlet-name>
-    <servlet-class>untitled6.server.GreetingServiceImpl</servlet-class>
+    <servlet-class>com.icl.integrator.gui.server.GreetingServiceImpl</servlet-class>
   </servlet>
 
   <servlet-mapping>

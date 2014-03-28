@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module>
   <!-- Inherit our applications main module.                      -->
-  <inherits name='untitled6.testmodule' />
+  <inherits name='com.icl.integrator.gui.testmodule' />
 
   <!-- Specify the path to any remote services.                   -->
-  <servlet path="/testmodule/greet" class="untitled6.server.GreetingServiceImpl" />
+  <servlet path="/testmodule/greet" class="gui.server.GreetingServiceImpl" />
 
 </module>
