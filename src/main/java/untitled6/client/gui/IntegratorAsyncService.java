@@ -25,65 +25,65 @@ public class IntegratorAsyncService {
 
     private final GreetingServiceAsync service = GWT.create(GreetingService.class);
 
-    private AppLoadingView getLoadingView() {
+    private AppLoadingView createLoadingView() {
         final AppLoadingView loading = new AppLoadingView();
-        loading.startProcessing();
+        loading.center();
         return loading;
     }
 
     public void greetServer(String name, final AsyncCallback<String> async) {
-        service.greetServer(name, new LoadingCallback<>(getLoadingView(), async));
+        service.greetServer(name, new LoadingCallback<>(createLoadingView(), async));
     }
 
     public void initClient(String host, String deployPath, int port, AsyncCallback<Void> async) {
-        service.initClient(host, deployPath, port, new LoadingCallback<>(getLoadingView(), async));
+        service.initClient(host, deployPath, port, new LoadingCallback<>(createLoadingView(), async));
     }
 
     public <T extends DestinationDescriptor> void deliver(IntegratorPacket<DeliveryDTO, T> delivery,
                                                           AsyncCallback<Map<String, ResponseDTO<String>>> async)
             throws IntegratorClientException {
-        service.deliver(delivery, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.deliver(delivery, new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     public <T extends ActionDescriptor, Y extends DestinationDescriptor> void registerService(
             IntegratorPacket<TargetRegistrationDTO<T>, Y> registrationDTO,
             AsyncCallback<RegistrationResultDTO> async)
             throws IntegratorClientException {
-        service.registerService(registrationDTO, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.registerService(registrationDTO, new IntegratorLoadingCallback<>(createLoadingView(), async));
 
     }
 
     public <T extends DestinationDescriptor> void getServiceList(IntegratorPacket<Void, T> packet,
                                                                  AsyncCallback<List<ServiceDTO>> async)
             throws IntegratorClientException {
-        service.getServiceList(packet, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.getServiceList(packet, new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor> void getSupportedActions(
             IntegratorPacket<ServiceDTO, T> serviceDTO,
             AsyncCallback<List<ActionEndpointDTO<Y>>> async)
             throws IntegratorClientException {
-        service.getSupportedActions(serviceDTO, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.getSupportedActions(serviceDTO, new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     public <ADType extends ActionDescriptor, DDType extends DestinationDescriptor> void getServiceInfo(
             IntegratorPacket<ServiceDTO, DDType> serviceDTO,
             AsyncCallback<FullServiceDTO<ADType>> async)
             throws IntegratorClientException {
-        service.getServiceInfo(serviceDTO, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.getServiceInfo(serviceDTO, new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor> void addAction(
             IntegratorPacket<AddActionDTO<Y>, T> actionDTO, AsyncCallback<Void> async)
     throws IntegratorClientException {
-        service.addAction(actionDTO, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.addAction(actionDTO, new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     public <T extends DestinationDescriptor> void getActionsForDelivery(
             IntegratorPacket<Void, T> packet,
             AsyncCallback<List<DeliveryActionsDTO>> async)
     throws IntegratorClientException {
-        service.getActionsForDelivery(packet, new IntegratorLoadingCallback<>(getLoadingView(), async));
+        service.getActionsForDelivery(packet, new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor> void getServicesSupportingActionType(
@@ -91,7 +91,7 @@ public class IntegratorAsyncService {
             AsyncCallback<Map<String, ServiceAndActions<Y>>> async)
     throws IntegratorClientException {
         service.getServicesSupportingActionType(packet,
-                                                new IntegratorLoadingCallback<>(getLoadingView(), async));
+                                                new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     private static final class LoadingCallback<T> extends HasView<T> {
@@ -125,7 +125,7 @@ public class IntegratorAsyncService {
         }
 
         protected void hide() {
-            loading.stopProcessing();
+            loading.hide();
         }
 
         @Override

@@ -15,18 +15,4 @@ public final class AppLoadingView extends PopupPanel {
         add(widget);
         setModal(true);
     }
-
-    @Override
-    public Widget asWidget() {
-        return this;
-    }
-
-    public void stopProcessing() {
-        hide();
-    }
-
-    public void startProcessing() {
-        center();
-        show();
-    }
 }
