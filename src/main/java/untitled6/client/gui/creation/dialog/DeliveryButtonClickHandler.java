@@ -9,6 +9,7 @@ import com.icl.integrator.dto.registration.ActionMethod;
 import untitled6.client.GenericCallback;
 import untitled6.client.GreetingServiceAsync;
 import untitled6.client.gui.CreationListener;
+import untitled6.client.gui.IntegratorAsyncService;
 import untitled6.client.gui.descriptions.DeliveryDialog;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class DeliveryButtonClickHandler implements ClickHandler {
 
-    private final GreetingServiceAsync
+    private final IntegratorAsyncService
             service = GreetingServiceAsync.Util.getInstance();
 
     @Override
@@ -30,37 +31,28 @@ public class DeliveryButtonClickHandler implements ClickHandler {
     }
 
     private class GetServicesCallback extends
-            GenericCallback<ResponseDTO<List<DeliveryActionsDTO>>> {
-
-        protected GetServicesCallback() {
-            super("generic");
-        }
+            GenericCallback<List<DeliveryActionsDTO>> {
 
         @Override
-        public void onSuccess(ResponseDTO<List<DeliveryActionsDTO>> result) {
-            final List<DeliveryActionsDTO> responseValue =
-                    result.getResponse().getResponseValue();
+        public void onSuccess(List<DeliveryActionsDTO> result) {
             service.getServicesSupportingActionType(
                     new IntegratorPacket<>(ActionMethod.HANDLE_RESPONSE_FROM_TARGET),
-                    new ShowDeliveryDialogCallback(responseValue));
+                    new ShowDeliveryDialogCallback(result));
         }
     }
 
     private class ShowDeliveryDialogCallback extends GenericCallback<
-            ResponseDTO<Map<String,ServiceAndActions<ActionDescriptor>>>>{
+            Map<String,ServiceAndActions<ActionDescriptor>>>{
 
         private final List<DeliveryActionsDTO> deliveryActions;
 
         protected ShowDeliveryDialogCallback(List<DeliveryActionsDTO> deliveryActions) {
-            super("supp");
             this.deliveryActions = deliveryActions;
         }
 
         @Override
-        public void onSuccess(ResponseDTO<Map<String, ServiceAndActions<ActionDescriptor>>> result) {
-            Map<String, ServiceAndActions<ActionDescriptor>>
-                    serviceAndActions =result.getResponse().getResponseValue();
-            new DeliveryDialog(deliveryActions,serviceAndActions,
+        public void onSuccess(Map<String, ServiceAndActions<ActionDescriptor>> result) {
+            new DeliveryDialog(deliveryActions,result,
                new CreationListener<DeliveryDTO>() {
                    @Override
                    public void onCreated(DeliveryDTO value) {
@@ -74,11 +66,11 @@ public class DeliveryButtonClickHandler implements ClickHandler {
         private void deliver(DeliveryDTO deliveryDTO) {
             service.deliver(
                 new IntegratorPacket<>(deliveryDTO),
-                new GenericCallback<ResponseDTO<Map<String, ResponseDTO<String>>>>("delivery") {
+                new GenericCallback<Map<String, ResponseDTO<String>>>() {
                     @Override
-                    public void onSuccess(
-                            ResponseDTO<Map<String, ResponseDTO<String>>> result) {
+                    public void onSuccess(Map<String, ResponseDTO<String>> result) {
                         System.out.println(result);
+                        //TODO ну харош
                     }
                 });
         }

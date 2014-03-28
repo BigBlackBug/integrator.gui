@@ -2,10 +2,12 @@ package untitled6.client.gui.creation;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
-import untitled6.client.GreetingServiceAsync;
 import untitled6.client.gui.descriptions.ActionDescriptorPanel;
 
 import java.util.List;
@@ -14,8 +16,6 @@ import java.util.List;
  * Created by e.shahmaev on 21.03.14.
  */
 public class ActionDisplayPanel extends Composite{
-    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
-
     private final ListBox listBox;
 
     private final VerticalPanel infoPanel;

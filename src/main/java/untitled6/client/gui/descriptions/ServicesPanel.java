@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.FullServiceDTO;
 import com.icl.integrator.dto.IntegratorPacket;
-import com.icl.integrator.dto.ResponseDTO;
 import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.registration.ActionDescriptor;
@@ -14,13 +13,14 @@ import com.icl.integrator.dto.registration.TargetRegistrationDTO;
 import untitled6.client.GenericCallback;
 import untitled6.client.GreetingServiceAsync;
 import untitled6.client.gui.CreationListener;
+import untitled6.client.gui.IntegratorAsyncService;
 import untitled6.client.gui.creation.dialog.AddServiceDialog;
 
 import java.util.List;
 
 public class ServicesPanel extends Composite {
 
-    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
+    private final IntegratorAsyncService service = GreetingServiceAsync.Util.getInstance();
 
     private final ActionsPanel actionsPanel;
 
@@ -52,21 +52,19 @@ public class ServicesPanel extends Composite {
                     public void onCreated(TargetRegistrationDTO<ActionDescriptor> value) {
                         service.registerService(
                         new IntegratorPacket<>(value),
-                        new GenericCallback<ResponseDTO<RegistrationResultDTO>>("a") {
+                        new GenericCallback<RegistrationResultDTO>() {
                             @Override
-                            public void onSuccess(ResponseDTO<RegistrationResultDTO> result) {
+                            public void onSuccess(RegistrationResultDTO result) {
+                                //TODO если хоть одна обломалась, то мб выкидывать на серваке еррор?
                                 PopupPanel widgets = new PopupPanel(true,false);
                                 widgets.setWidget(new Label("Сервис зареган"));
                                 widgets.center();
                                 service.getServiceList(
                                         new IntegratorPacket<Void, DestinationDescriptor>(),
-                                        new GenericCallback<ResponseDTO<List<ServiceDTO>>>("GSL") {
+                                        new GenericCallback<List<ServiceDTO>>() {
                                             @Override
-                                            public void onSuccess(ResponseDTO<List<ServiceDTO>> result) {
-                                                List<ServiceDTO> responseValue =
-                                                        result.getResponse().getResponseValue();
-
-                                                refresh(responseValue);
+                                            public void onSuccess(List<ServiceDTO> result) {
+                                                refresh(result);
                                             }
                                         });
                             }
@@ -106,21 +104,12 @@ public class ServicesPanel extends Composite {
     public void refillViews(int index) {
         ServiceDTO serviceDTO = services.get(index);
         service.getServiceInfo(new IntegratorPacket<>(serviceDTO),
-           new GenericCallback<ResponseDTO<FullServiceDTO<ActionDescriptor>>>(
-                   "FULLSR") {
+           new GenericCallback<FullServiceDTO<ActionDescriptor>>(){
                @Override
-               public void onSuccess(
-                       ResponseDTO<FullServiceDTO<ActionDescriptor>> result) {
-                   if (result.isSuccess()) {
-                       FullServiceDTO<ActionDescriptor>
-                               fullservice =
-                               result.getResponse().getResponseValue();
-                       actionsPanel.setActions(fullservice);
-                       infoPanel.clear();
-                       infoPanel.add(new ServiceDescriptionPanel(fullservice));
-                   } else {
-                       onFailure(new RuntimeException(result.getError().getDeveloperMessage()));
-                   }
+               public void onSuccess(FullServiceDTO<ActionDescriptor> result) {
+                   actionsPanel.setActions(result);
+                   infoPanel.clear();
+                   infoPanel.add(new ServiceDescriptionPanel(result));
                }
            });
     }

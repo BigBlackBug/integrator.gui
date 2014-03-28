@@ -10,8 +10,8 @@ public final class AppLoadingView extends PopupPanel {
 
     public AppLoadingView() {
         Image widget = new Image(images.loading());
-        widget.setWidth("100px");
-        widget.setHeight("100px");
+        widget.setWidth("75px");
+        widget.setHeight("75px");
         add(widget);
         setModal(true);
     }

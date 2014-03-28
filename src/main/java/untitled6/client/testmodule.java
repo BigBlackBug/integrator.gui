@@ -5,9 +5,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.IntegratorPacket;
-import com.icl.integrator.dto.ResponseDTO;
 import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
+import untitled6.client.gui.IntegratorAsyncService;
 import untitled6.client.gui.creation.dialog.DeliveryButtonClickHandler;
 import untitled6.client.gui.descriptions.ActionsPanel;
 import untitled6.client.gui.descriptions.ServicesPanel;
@@ -24,7 +24,7 @@ public class testmodule implements EntryPoint {
 	 */
 //    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
 
-    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
+    private final IntegratorAsyncService service = GreetingServiceAsync.Util.getInstance();
 	/**
 	 * This is the entry point method.
 	 */
@@ -67,21 +67,19 @@ public class testmodule implements EntryPoint {
 				serverResponseLabel.setText("");
 				String text = portField.getText();
 				int i = Integer.parseInt(text);
-				GenericCallback<Void> callback = new GenericCallback<Void>("INIT") {
+				GenericCallback<Void> callback = new GenericCallback<Void>() {
 
 					@Override
 					public void onSuccess(Void result) {
                         service.getServiceList(
 								new IntegratorPacket<Void, DestinationDescriptor>(),
-								new GenericCallback<ResponseDTO<List<ServiceDTO>>>("GSL") {
+								new GenericCallback<List<ServiceDTO>>() {
 									@Override
-									public void onSuccess(ResponseDTO<List<ServiceDTO>> result) {
-										List<ServiceDTO> services =
-												result.getResponse().getResponseValue();
+									public void onSuccess(List<ServiceDTO> result) {
                                         ActionsPanel actionsPanel = new ActionsPanel();
                                         RootPanel.get("actionsContainer").add(actionsPanel);
                                         RootPanel.get("servicesContainer").add(
-                                                new ServicesPanel(services,actionsPanel));
+                                                new ServicesPanel(result,actionsPanel));
                                         RootPanel.get("deliveryButton").add(
                                                 new Button("Доставка",
                                                            new DeliveryButtonClickHandler()));

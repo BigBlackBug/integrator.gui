@@ -10,7 +10,6 @@ import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
-import untitled6.client.GreetingServiceAsync;
 import untitled6.client.util.Creator;
 
 import java.util.Map;
@@ -22,8 +21,6 @@ public class ResponseHandlerSelectorPanel extends Composite
         implements Creator<DestinationDescriptor> {
 
     private final ListBox servicesLB;
-
-    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
 
     private final ActionDisplayPanel actionsPanel;
 

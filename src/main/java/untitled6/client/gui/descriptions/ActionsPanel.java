@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.FullServiceDTO;
 import com.icl.integrator.dto.IntegratorPacket;
-import com.icl.integrator.dto.ResponseDTO;
 import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
@@ -14,13 +13,14 @@ import com.icl.integrator.dto.registration.AddActionDTO;
 import untitled6.client.GenericCallback;
 import untitled6.client.GreetingServiceAsync;
 import untitled6.client.gui.CreationListener;
+import untitled6.client.gui.IntegratorAsyncService;
 import untitled6.client.gui.creation.dialog.AddActionDialog;
 
 import java.util.List;
 
 public class ActionsPanel extends Composite {
 
-    private final GreetingServiceAsync service = GreetingServiceAsync.Util.getInstance();
+    private final IntegratorAsyncService service = GreetingServiceAsync.Util.getInstance();
 
     private final ListBox listBox;
 
@@ -100,28 +100,26 @@ public class ActionsPanel extends Composite {
         }
     }
 
-    private class RefillPanelsCallback extends GenericCallback<ResponseDTO<Void>> {
+    private class RefillPanelsCallback extends GenericCallback<Void> {
 
         private final ServiceDTO serviceDTO;
 
         protected RefillPanelsCallback(ServiceDTO serviceDTO) {
-            super("ADDACTION");
             this.serviceDTO = serviceDTO;
         }
 
         @Override
-        public void onSuccess(ResponseDTO<Void> result) {
+        public void onSuccess(Void result) {
             PopupPanel widgets = new PopupPanel(true, false);
             widgets.setWidget(new Label("Действие добавлено"));
             widgets.center();
             service.getSupportedActions(
                 new IntegratorPacket<>(serviceDTO),
-                new GenericCallback<ResponseDTO<
-                        List<ActionEndpointDTO<ActionDescriptor>>>>("getsuppactions") {
+                new GenericCallback<
+                        List<ActionEndpointDTO<ActionDescriptor>>>() {
                     @Override
-                    public void onSuccess(
-                            ResponseDTO<List<ActionEndpointDTO<ActionDescriptor>>> result) {
-                        setAllActions(result.getResponse().getResponseValue());
+                    public void onSuccess(List<ActionEndpointDTO<ActionDescriptor>> result) {
+                        setAllActions(result);
                     }
                 }
             );
