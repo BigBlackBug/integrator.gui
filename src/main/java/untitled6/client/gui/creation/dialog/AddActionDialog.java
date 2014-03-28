@@ -8,6 +8,8 @@ import com.icl.integrator.dto.registration.ActionEndpointDTO;
 import com.icl.integrator.dto.registration.ActionRegistrationDTO;
 import com.icl.integrator.dto.util.EndpointType;
 import untitled6.client.gui.CreationListener;
+import untitled6.client.gui.descriptions.HttpActionInputDescriptionPanel;
+import untitled6.client.gui.descriptions.JmsActionInputDescriptorPanel;
 import untitled6.client.util.Creator;
 
 //TODO засунуть сюда addActionpanel

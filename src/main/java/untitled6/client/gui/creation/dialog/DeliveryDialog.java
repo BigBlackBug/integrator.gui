@@ -1,4 +1,4 @@
-package untitled6.client.gui.descriptions;
+package untitled6.client.gui.creation.dialog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;

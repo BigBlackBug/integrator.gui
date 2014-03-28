@@ -1,4 +1,4 @@
-package untitled6.client.gui.creation.dialog;
+package untitled6.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -6,11 +6,9 @@ import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionMethod;
-import untitled6.client.GenericCallback;
-import untitled6.client.GreetingServiceAsync;
 import untitled6.client.gui.CreationListener;
 import untitled6.client.gui.IntegratorAsyncService;
-import untitled6.client.gui.descriptions.DeliveryDialog;
+import untitled6.client.gui.creation.dialog.DeliveryDialog;
 
 import java.util.List;
 import java.util.Map;

@@ -10,6 +10,7 @@ import com.icl.integrator.dto.registration.TargetRegistrationDTO;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.util.EndpointType;
 import untitled6.client.gui.CreationListener;
+import untitled6.client.gui.creation.AddActionPanel;
 import untitled6.client.util.CreationException;
 import untitled6.client.util.Creator;
 import untitled6.client.gui.creation.DeliverySettingsPanel;

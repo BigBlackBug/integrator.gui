@@ -8,9 +8,8 @@ import com.icl.integrator.dto.IntegratorPacket;
 import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import untitled6.client.gui.IntegratorAsyncService;
-import untitled6.client.gui.creation.dialog.DeliveryButtonClickHandler;
-import untitled6.client.gui.descriptions.ActionsPanel;
-import untitled6.client.gui.descriptions.ServicesPanel;
+import untitled6.client.gui.display.ActionsPanel;
+import untitled6.client.gui.display.ServicesPanel;
 
 import java.util.List;
 

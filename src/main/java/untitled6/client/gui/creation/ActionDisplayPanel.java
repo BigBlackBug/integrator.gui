@@ -8,7 +8,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
-import untitled6.client.gui.descriptions.ActionDescriptorPanel;
+import untitled6.client.gui.display.ActionDescriptorPanel;
 
 import java.util.List;
 

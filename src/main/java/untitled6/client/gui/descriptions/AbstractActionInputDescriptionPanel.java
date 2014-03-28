@@ -1,4 +1,4 @@
-package untitled6.client.gui.creation.dialog;
+package untitled6.client.gui.descriptions;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;

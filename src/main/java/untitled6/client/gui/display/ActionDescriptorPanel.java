@@ -1,4 +1,4 @@
-package untitled6.client.gui.descriptions;
+package untitled6.client.gui.display;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;

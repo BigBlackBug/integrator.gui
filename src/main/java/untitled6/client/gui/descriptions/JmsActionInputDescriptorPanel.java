@@ -1,4 +1,4 @@
-package untitled6.client.gui.creation.dialog;
+package untitled6.client.gui.descriptions;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
@@ -11,7 +11,7 @@ import untitled6.client.gui.EnumListBox;
 /**
  * Created by e.shahmaev on 19.03.14.
  */
-public class JmsActionInputDescriptorPanel extends AbstractActionInputDescriptionPanel{
+public class JmsActionInputDescriptorPanel extends AbstractActionInputDescriptionPanel {
 
     private final TextBox queueName;
 
