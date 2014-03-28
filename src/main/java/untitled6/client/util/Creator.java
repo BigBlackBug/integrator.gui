@@ -1,9 +1,9 @@
-package untitled6.client.gui.creation;
+package untitled6.client.util;
 
 /**
  * Created by e.shahmaev on 19.03.14.
  */
 public interface Creator<T> {
 
-    public T create();
+    public T create() throws CreationException;
 }

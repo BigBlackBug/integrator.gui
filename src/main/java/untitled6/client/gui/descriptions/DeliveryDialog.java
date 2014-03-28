@@ -11,7 +11,7 @@ import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import untitled6.client.gui.CreationListener;
-import untitled6.client.gui.creation.EnumListBox;
+import untitled6.client.gui.EnumListBox;
 import untitled6.client.gui.creation.ResponseHandlerSelectorPanel;
 
 import java.util.ArrayList;

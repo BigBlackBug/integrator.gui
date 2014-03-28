@@ -1,6 +1,7 @@
-package untitled6.client.gui.creation;
+package untitled6.client.gui;
 
 import com.google.gwt.user.client.ui.ListBox;
+import untitled6.client.util.Creator;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

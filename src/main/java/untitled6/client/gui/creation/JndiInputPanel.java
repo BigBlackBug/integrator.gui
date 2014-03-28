@@ -2,6 +2,7 @@ package untitled6.client.gui.creation;
 
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
+import untitled6.client.util.Creator;
 
 /**
  * Created by e.shahmaev on 19.03.14.

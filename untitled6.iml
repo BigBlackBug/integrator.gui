@@ -18,6 +18,8 @@
     </facet>
     <facet type="gwt" name="GWT">
       <configuration>
+        <setting name="compilerMaxHeapSize" value="1024" />
+        <setting name="gwtScriptOutputStyle" value="DETAILED" />
         <setting name="gwtSdkUrl" value="file://$MAVEN_REPOSITORY$/com/google/gwt/gwt-dev/2.6.0/" />
         <setting name="gwtSdkType" value="maven" />
         <setting name="webFacet" value="Web" />
@@ -65,6 +67,7 @@
     <orderEntry type="library" name="Maven: com.icl.integrator:dto:sources:1.5" level="project" />
     <orderEntry type="library" name="Maven: com.icl.integrator:api:sources:1.5" level="project" />
     <orderEntry type="library" name="Maven: com.icl.integrator:http-client:sources:1.5" level="project" />
+    <orderEntry type="library" name="gwt-presenter-1.0.0" level="project" />
   </component>
 </module>
 

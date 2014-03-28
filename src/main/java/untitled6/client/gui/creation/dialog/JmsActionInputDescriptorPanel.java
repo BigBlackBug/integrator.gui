@@ -6,7 +6,7 @@ import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
 import com.icl.integrator.dto.registration.ActionMethod;
 import com.icl.integrator.dto.registration.QueueDTO;
-import untitled6.client.gui.creation.EnumListBox;
+import untitled6.client.gui.EnumListBox;
 
 /**
  * Created by e.shahmaev on 19.03.14.

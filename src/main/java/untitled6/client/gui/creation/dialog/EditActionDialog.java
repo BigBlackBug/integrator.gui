@@ -7,7 +7,7 @@ import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
 import com.icl.integrator.dto.util.EndpointType;
 import untitled6.client.gui.CreationListener;
-import untitled6.client.gui.creation.Creator;
+import untitled6.client.util.Creator;
 
 /**
  * Created by e.shahmaev on 25.03.2014.

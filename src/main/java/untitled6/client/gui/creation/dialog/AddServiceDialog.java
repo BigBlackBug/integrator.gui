@@ -10,7 +10,8 @@ import com.icl.integrator.dto.registration.TargetRegistrationDTO;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.util.EndpointType;
 import untitled6.client.gui.CreationListener;
-import untitled6.client.gui.creation.Creator;
+import untitled6.client.util.CreationException;
+import untitled6.client.util.Creator;
 import untitled6.client.gui.creation.DeliverySettingsPanel;
 import untitled6.client.gui.creation.HttpServiceInputDescriptionPanel;
 import untitled6.client.gui.creation.JmsServiceInputDescriptionPanel;
@@ -70,28 +71,30 @@ public class AddServiceDialog extends DialogBox {
         addActionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-            CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
-                    CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
-                        @Override
-                        public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
-                        //выкидываем actionPanel
-                            table.removeCell(0,3);
-                        if (value != null) {
-                            actionDesctiprors.add(value);
-                            addActionsLB.addItem(value.getAction().getActionName());
-                        }
-                        }
-                    };
-            int selectedIndex = typesBox.getSelectedIndex();
-            AddActionPanel actionPanel;
-            if (selectedIndex == 0) { //http
-                actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
-            } else {
-                actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
-            }
-                table.setWidget(0,3,actionPanel);
-                table.getFlexCellFormatter().setRowSpan(0,3,3);
-
+                CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
+                        CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
+                            @Override
+                            public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
+                    //выкидываем actionPanel
+                    table.removeCell(3,0);
+                                table.getFlexCellFormatter().setRowSpan(1, 2, 2);
+                    if (value != null) {
+                        actionDesctiprors.add(value);
+                        addActionsLB.addItem(value.getAction().getActionName());
+                    }
+                            }
+                        };
+                int selectedIndex = typesBox.getSelectedIndex();
+                AddActionPanel actionPanel;
+                if (selectedIndex == 0) { //http
+                    actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
+                } else {
+                    actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
+                }
+                actionPanel.setWidth("100px");
+                table.setWidget(3,0,actionPanel);
+                table.getFlexCellFormatter().setColSpan(3,0,2);
+                table.getFlexCellFormatter().setRowSpan(1, 2, 3);
             }
         });
         addActionsLB = new ListBox();
@@ -102,13 +105,20 @@ public class AddServiceDialog extends DialogBox {
         Button createButton = new Button("Создать", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                hide();
                 String serviceName = serviceNamesTB.getText();
                 EndpointDescriptor endpointDescriptor = inputDescCreator.create();
-                DeliverySettingsDTO deliverySettingsDTO = deliverySettingsPanel.create();
-                creationListener.onCreated(new TargetRegistrationDTO<>(serviceName,
-                                                                       endpointDescriptor,
-                                                                       deliverySettingsDTO,actionDesctiprors));
+                DeliverySettingsDTO deliverySettingsDTO;
+                try {
+                    deliverySettingsDTO = deliverySettingsPanel.create();
+                }catch(CreationException cex){
+//                    errorLabel.setText(cex.getCause().getMessage());
+                    return;
+                }
+                creationListener.onCreated(
+                        new TargetRegistrationDTO<>(serviceName, endpointDescriptor,
+                                                    deliverySettingsDTO,
+                                                    actionDesctiprors));
+                hide();
             }
         });
         Button closeButton = new Button("Не создать", new ClickHandler() {
@@ -123,22 +133,22 @@ public class AddServiceDialog extends DialogBox {
         buttonPanel.add(addActionButton);
 
         DockPanel dock = new DockPanel();
-        dock.setSpacing(4);
+        dock.setSpacing(7);
         dock.add(buttonPanel, DockPanel.SOUTH);
         dock.add(table,DockPanel.CENTER);
 
-//        table.setWidget(0,0,new HTML("<center><b>Название сервиса:</b>"));
-        table.setWidget(0,0,new HTML("<b>Название сервиса:</b>"));
-        table.setWidget(0,1,serviceNamesTB);
-        table.setWidget(1,0,new HTML("<b>Тип сервиса:</b>"));
-        table.setWidget(1,1,typesBox);
+        table.setWidget(0, 0, new HTML("<b>Название сервиса:</b>"));
+        table.setWidget(0, 1, serviceNamesTB);
+        table.setWidget(1, 0, new HTML("<b>Тип сервиса:</b>"));
+        table.setWidget(1, 1, typesBox);
         typesBox.setWidth("100%");
-        table.setWidget(2,0,(Composite)inputDescCreator);
-        table.getFlexCellFormatter().setColSpan(2,0,2);
-        table.setWidget(0,2,new HTML("<b>Действия:</b>"));
+        table.setWidget(2, 0, (Composite) inputDescCreator);
+        table.getFlexCellFormatter().setColSpan(2, 0, 2);
+        table.setWidget(0, 2, new HTML("<b>Действия:</b>"));
         addActionsLB.setWidth("100%");
-        table.setWidget(1,2,addActionsLB);
-        table.getFlexCellFormatter().setRowSpan(1,2,2);
+        addActionsLB.setHeight("100%");
+        table.setWidget(1, 2, addActionsLB);
+        table.getFlexCellFormatter().setRowSpan(1, 2, 2);
         setWidget(dock);
     }
     FlexTable table = new FlexTable();

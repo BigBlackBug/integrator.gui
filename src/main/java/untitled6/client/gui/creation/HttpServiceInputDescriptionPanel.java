@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.source.HttpEndpointDescriptorDTO;
+import untitled6.client.util.Creator;
 
 /**
  * Created by e.shahmaev on 19.03.14.
@@ -35,7 +36,7 @@ public class HttpServiceInputDescriptionPanel extends Composite implements
     @Override
     public EndpointDescriptor create() {
         String host = hostTB.getText();
-        String port = portTB.getText();
+        String port = portTB.getText();  //TODO validate
         return new HttpEndpointDescriptorDTO(host, Integer.parseInt(port));
     }
 }
