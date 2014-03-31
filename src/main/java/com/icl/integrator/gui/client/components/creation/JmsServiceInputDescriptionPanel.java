@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.source.JMSEndpointDescriptorDTO;
-import com.icl.integrator.gui.client.util.Creator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +14,7 @@ import java.util.Map;
 /**
  * Created by e.shahmaev on 19.03.14.
  */
-public class JmsServiceInputDescriptionPanel extends Composite
-        implements Creator<EndpointDescriptor> {
+public class JmsServiceInputDescriptionPanel extends InputDescriptionPanel {
 
     private final FlexTable table = new FlexTable();
 
@@ -35,6 +33,11 @@ public class JmsServiceInputDescriptionPanel extends Composite
         table.setCellSpacing(2);
         initWidget(table);
         setWidth("100%");
+    }
+
+    @Override
+    public FlexTable getTable() {
+        return table;
     }
 
     @Override
