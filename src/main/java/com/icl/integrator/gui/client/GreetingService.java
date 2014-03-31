@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
+import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
 import com.icl.integrator.httpclient.IntegratorClientException;
 
@@ -52,4 +53,9 @@ public interface GreetingService extends RemoteService {
     ResponseDTO<Map<String, ServiceAndActions<Y>>>
     getServicesSupportingActionType(IntegratorPacket<ActionMethod, T> packet)
             throws IntegratorClientException;
+
+    public <T extends DestinationDescriptor>
+    ResponseDTO<Boolean>
+    isAvailable(IntegratorPacket<ServiceDestinationDescriptor,
+            T> packet)  throws IntegratorClientException;
 }

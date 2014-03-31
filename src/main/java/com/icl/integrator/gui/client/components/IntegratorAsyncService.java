@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
+import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
 import com.icl.integrator.gui.client.GreetingService;
 import com.icl.integrator.gui.client.GreetingServiceAsync;
@@ -93,6 +94,12 @@ public class IntegratorAsyncService {
     throws IntegratorClientException {
         service.getServicesSupportingActionType(packet,
                                                 new IntegratorLoadingCallback<>(createLoadingView(), async));
+    }
+
+    public <T extends DestinationDescriptor>
+    void
+    isAvailable(IntegratorPacket<ServiceDestinationDescriptor,T> packet, AsyncCallback<Boolean> async){
+        service.isAvailable(packet,new IntegratorLoadingCallback<>(createLoadingView(), async));
     }
 
     private static final class LoadingCallback<T> extends HasView<T> {
