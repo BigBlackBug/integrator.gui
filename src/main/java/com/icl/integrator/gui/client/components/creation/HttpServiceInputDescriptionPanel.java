@@ -1,25 +1,27 @@
 package com.icl.integrator.gui.client.components.creation;
 
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.TextBox;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.source.HttpEndpointDescriptorDTO;
-import com.icl.integrator.gui.client.util.Creator;
+import com.icl.integrator.gui.client.util.CreationException;
+import com.icl.integrator.gui.shared.FieldVerifier;
+import com.icl.integrator.gui.shared.GuiException;
 
 /**
  * Created by e.shahmaev on 19.03.14.
  */
-public class HttpServiceInputDescriptionPanel extends Composite implements
-        Creator<EndpointDescriptor> {
+public class HttpServiceInputDescriptionPanel extends InputDescriptionPanel {
 
     private final TextBox hostTB;
 
     private final TextBox portTB;
 
+    private FlexTable table = new FlexTable();
+
     public HttpServiceInputDescriptionPanel() {
-        FlexTable table = new FlexTable();
+
         hostTB = new TextBox();
         hostTB.setWidth("100%");
         portTB = new TextBox();
@@ -35,8 +37,18 @@ public class HttpServiceInputDescriptionPanel extends Composite implements
 
     @Override
     public EndpointDescriptor create() {
-        String host = hostTB.getText();
-        String port = portTB.getText();  //TODO validate
-        return new HttpEndpointDescriptorDTO(host, Integer.parseInt(port));
+        try {
+            String host = hostTB.getText();
+            String delay = portTB.getText();
+            int portNumber = FieldVerifier.parseNumber(delay, 1);
+            return new HttpEndpointDescriptorDTO(host, portNumber);
+        } catch (GuiException gex) {
+            throw new CreationException(gex);
+        }
+    }
+
+    @Override
+    public FlexTable getTable() {
+        return table;
     }
 }
