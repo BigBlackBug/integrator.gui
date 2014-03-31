@@ -80,6 +80,9 @@ public class DeliveryDialog extends DialogBox {
                 JSONValue jsonValue;
                 try{
                     jsonValue = JSONParser.parseStrict(deliveryData);
+                    if (jsonValue.isObject() == null) {
+                        throw new IllegalArgumentException();
+                    }
                 }catch(Exception ex){
                     PopupPanel widgets = new PopupPanel(true,false);
                     widgets.setWidget(new Label("У Вас кривой JSON"));
@@ -214,8 +217,11 @@ public class DeliveryDialog extends DialogBox {
             }
             return result;
         } else {
-            return json.toString();
+            String value = json.toString();
+            if (value.startsWith("\"") && value.endsWith("\"")) {
+                return value.substring(1, value.length() - 1);
+            }
+            return value;
         }
     }
-
 }

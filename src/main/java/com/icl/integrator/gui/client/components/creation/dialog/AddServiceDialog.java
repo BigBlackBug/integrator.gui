@@ -65,6 +65,7 @@ public class AddServiceDialog extends DialogBox {
             }
         });
         inputDescCreator = new HttpServiceInputDescriptionPanel();
+
         typesBox.setSelectedIndex(0);
 
         deliverySettingsPanel = new DeliverySettingsPanel();
@@ -72,30 +73,31 @@ public class AddServiceDialog extends DialogBox {
         addActionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
-                        CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
-                            @Override
-                            public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
-                    //выкидываем actionPanel
-                    table.removeCell(3,0);
-                                table.getFlexCellFormatter().setRowSpan(1, 2, 2);
-                    if (value != null) {
-                        actionDesctiprors.add(value);
-                        addActionsLB.addItem(value.getAction().getActionName());
-                    }
-                            }
-                        };
-                int selectedIndex = typesBox.getSelectedIndex();
-                AddActionPanel actionPanel;
-                if (selectedIndex == 0) { //http
-                    actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
-                } else {
-                    actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
+            final int rowCount = table.getRowCount();
+            CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
+                    CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
+                        @Override
+                        public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
+                //выкидываем actionPanel
+                table.removeCell(rowCount,0);
+                table.getFlexCellFormatter().setRowSpan(1, 2, 2);
+                if (value != null) {
+                    actionDesctiprors.add(value);
+                    addActionsLB.addItem(value.getAction().getActionName());
                 }
-                actionPanel.setWidth("100px");
-                table.setWidget(3,0,actionPanel);
-                table.getFlexCellFormatter().setColSpan(3,0,2);
-                table.getFlexCellFormatter().setRowSpan(1, 2, 3);
+                        }
+                    };
+            int selectedIndex = typesBox.getSelectedIndex();
+            AddActionPanel actionPanel;
+            if (selectedIndex == 0) { //http
+                actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
+            } else {
+                actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
+            }
+            actionPanel.setWidth("100px");
+            table.setWidget(rowCount,0,actionPanel);
+            table.getFlexCellFormatter().setColSpan(3,0,2);
+            table.getFlexCellFormatter().setRowSpan(1, 2, 3);
             }
         });
         addActionsLB = new ListBox();
@@ -112,7 +114,9 @@ public class AddServiceDialog extends DialogBox {
                 try {
                     deliverySettingsDTO = deliverySettingsPanel.create();
                 }catch(CreationException cex){
-//                    errorLabel.setText(cex.getCause().getMessage());
+                    PopupPanel widgets = new PopupPanel(true,false);
+                    widgets.setWidget(new Label(cex.getCause().getMessage()));
+                    widgets.center();
                     return;
                 }
                 creationListener.onCreated(
@@ -120,6 +124,15 @@ public class AddServiceDialog extends DialogBox {
                                                     deliverySettingsDTO,
                                                     actionDesctiprors));
                 hide();
+            }
+        });
+        Button showSettings = new Button("Настройки доставки", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                int rowCount = table.getRowCount();
+                table.setWidget(rowCount, 0, deliverySettingsPanel);
+                table.getFlexCellFormatter().setColSpan(3,0,2);
+                table.getFlexCellFormatter().setRowSpan(1, 2, 3);
             }
         });
         Button closeButton = new Button("Не создать", new ClickHandler() {
@@ -131,6 +144,7 @@ public class AddServiceDialog extends DialogBox {
         buttonPanel.setSpacing(3);
         buttonPanel.add(closeButton);
         buttonPanel.add(createButton);
+        buttonPanel.add(showSettings);
         buttonPanel.add(addActionButton);
 
         DockPanel dock = new DockPanel();
@@ -144,6 +158,7 @@ public class AddServiceDialog extends DialogBox {
         table.setWidget(1, 1, typesBox);
         typesBox.setWidth("100%");
         table.setWidget(2, 0, (Composite) inputDescCreator);
+        //TODO добавлять поколоночно
         table.getFlexCellFormatter().setColSpan(2, 0, 2);
         table.setWidget(0, 2, new HTML("<b>Действия:</b>"));
         addActionsLB.setWidth("100%");

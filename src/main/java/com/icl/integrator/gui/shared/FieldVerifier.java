@@ -51,7 +51,7 @@ public class FieldVerifier {
             }
             return value;
         } catch (NumberFormatException ex) {
-            throw new GuiException("Введи число", ex);
+            throw new GuiException("Введи значение", ex);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.icl.integrator.gui.client.components;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -154,25 +155,23 @@ public class IntegratorAsyncService {
             async.onFailure(caught);
             Throwable cause = caught.getCause();
             String message = (cause != null ? cause.toString() : caught.toString());
-            createDialog(message).center();
+            createDialog(message, null).center();
         }
 
         @Override
         public void onSuccess(ResponseDTO<T> result) {
             super.onSuccess(result);
             if (result.isSuccess()) {
-                async.onSuccess(result.getResponse().getResponseValue());
+                SuccessDTO<T> response = result.getResponse();
+                async.onSuccess(response != null ? response.getResponseValue() : null);
             } else {
                 String errorMessage = result.getError().getErrorMessage();
-                createDialog(errorMessage).center();
-                //TODO show dialog
+                createDialog(errorMessage, result.getError().getDeveloperMessage()).center();
             }
-
         }
 
-        private DialogBox createDialog(String message) {
+        private DialogBox createDialog(final String message, final String extraMessage) {
             final DialogBox dialogBox = new DialogBox();
-            dialogBox.setAnimationEnabled(true);
             final Button closeButton = new Button("С глаз моих долой!");
             closeButton.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -180,13 +179,35 @@ public class IntegratorAsyncService {
                 }
             });
             closeButton.getElement().setId("closeButton");
-            VerticalPanel dialogVPanel = new VerticalPanel();
+            final VerticalPanel dialogVPanel = new VerticalPanel();
             dialogVPanel.addStyleName("dialogVPanel");
             dialogVPanel.add(new HTML("<b>Суть:</b>"));
             final HTML serverResponseLabel = new HTML();
             serverResponseLabel.addStyleName("serverResponseLabelError");
             serverResponseLabel.setHTML(message);
             dialogVPanel.add(serverResponseLabel);
+            if (extraMessage != null && !extraMessage.isEmpty()) {
+                final Button button = new Button("Ещё суть");
+                ClickHandler handler = new ClickHandler() {
+
+                    @Override
+                    public void onClick(ClickEvent event) {
+                        HTML w = new HTML(extraMessage);
+                        w.setWidth("500px");
+                        dialogVPanel.add(w);
+                        button.setVisible(false);
+                        dialogBox.getElement().getStyle().setProperty("width", "auto");
+                        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                            public void execute() {
+                                dialogBox.center();
+                            }
+                        });
+                    }
+                };
+                button.addClickHandler(handler);
+                dialogVPanel.add(button);
+            }
+
             dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
             dialogVPanel.add(closeButton);
             dialogBox.setWidget(dialogVPanel);

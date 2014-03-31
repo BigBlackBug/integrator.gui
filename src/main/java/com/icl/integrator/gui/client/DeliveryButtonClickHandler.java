@@ -66,7 +66,7 @@ public class DeliveryButtonClickHandler implements ClickHandler {
                     @Override
                     public void onSuccess(Map<String, ResponseDTO<String>> result) {
                         System.out.println(result);
-                        //TODO ну харош
+                        //TODO ну харош  Popup
                     }
                 });
         }
