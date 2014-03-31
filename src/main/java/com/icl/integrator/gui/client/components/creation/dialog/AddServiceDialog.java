@@ -10,12 +10,8 @@ import com.icl.integrator.dto.registration.TargetRegistrationDTO;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.util.EndpointType;
 import com.icl.integrator.gui.client.components.CreationListener;
-import com.icl.integrator.gui.client.components.creation.AddActionPanel;
-import com.icl.integrator.gui.client.components.creation.DeliverySettingsPanel;
-import com.icl.integrator.gui.client.components.creation.HttpServiceInputDescriptionPanel;
-import com.icl.integrator.gui.client.components.creation.JmsServiceInputDescriptionPanel;
+import com.icl.integrator.gui.client.components.creation.*;
 import com.icl.integrator.gui.client.util.CreationException;
-import com.icl.integrator.gui.client.util.Creator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +30,11 @@ public class AddServiceDialog extends DialogBox {
 
     private final ListBox addActionsLB;
 
-    private Creator<EndpointDescriptor> inputDescCreator;
+    FlexTable table = new FlexTable();
 
-    private List<ActionRegistrationDTO<ActionDescriptor>> actionDesctiprors =new ArrayList<>();
+    private InputDescriptionPanel inputDescCreator;
+
+    private List<ActionRegistrationDTO<ActionDescriptor>> actionDesctiprors = new ArrayList<>();
 
     public AddServiceDialog(final CreationListener<TargetRegistrationDTO<ActionDescriptor>>
                                     creationListener) {
@@ -52,16 +50,23 @@ public class AddServiceDialog extends DialogBox {
             @Override
             public void onClick(ClickEvent event) {
                 int selectedIndex = typesBox.getSelectedIndex();
-                table.removeCell(2,0);
+
                 if (selectedIndex == 0) {
+                    table.removeCell(3,0);
                     inputDescCreator = new HttpServiceInputDescriptionPanel();
+                    mergeTables(inputDescCreator.getTable(), table, 3, 0);
+                    table.getFlexCellFormatter().setRowSpan(1, 2, table.getRowCount() - 1);
                     //fill table
                 } else {
+                    table.removeCells(3,0,2);
+                    table.removeCells(3,0,2);
+
                     inputDescCreator = new JmsServiceInputDescriptionPanel();
+                    table.setWidget(2, 0, inputDescCreator);
+                    table.getFlexCellFormatter().setColSpan(2,0,2);
                     //fill table
                 }
-                table.setWidget(2,0,(Composite)inputDescCreator);
-                table.getFlexCellFormatter().setColSpan(2,0,2);
+
             }
         });
         inputDescCreator = new HttpServiceInputDescriptionPanel();
@@ -152,20 +157,33 @@ public class AddServiceDialog extends DialogBox {
         dock.add(buttonPanel, DockPanel.SOUTH);
         dock.add(table,DockPanel.CENTER);
 
-        table.setWidget(0, 0, new HTML("<b>Название сервиса:</b>"));
-        table.setWidget(0, 1, serviceNamesTB);
-        table.setWidget(1, 0, new HTML("<b>Тип сервиса:</b>"));
-        table.setWidget(1, 1, typesBox);
+        table.setWidget(0, 0, new HTML("<center><b>Cервис</b></center>"));
+        table.setWidget(1, 0, new HTML("<b>Название сервиса:</b>"));
+        table.setWidget(1, 1, serviceNamesTB);
+        table.setWidget(2, 0, new HTML("<b>Тип сервиса:</b>"));
+        table.setWidget(2, 1, typesBox);
         typesBox.setWidth("100%");
-        table.setWidget(2, 0, (Composite) inputDescCreator);
-        //TODO добавлять поколоночно
-        table.getFlexCellFormatter().setColSpan(2, 0, 2);
+        mergeTables(inputDescCreator.getTable(), table, 3, 0);
+
+//        table.setWidget(2, 0, (Composite) inputDescCreator);
+//        table.getFlexCellFormatter().setColSpan(2, 0, 2);
         table.setWidget(0, 2, new HTML("<b>Действия:</b>"));
         addActionsLB.setWidth("100%");
         addActionsLB.setHeight("100%");
         table.setWidget(1, 2, addActionsLB);
-        table.getFlexCellFormatter().setRowSpan(1, 2, 2);
+        table.getFlexCellFormatter().setRowSpan(1, 2, table.getRowCount() - 1);
+//        table.getFlexCellFormatter().setColSpan(0, 0, 2);
+        table.setCellSpacing(3);
+        table.setBorderWidth(1);
         setWidget(dock);
     }
-    FlexTable table = new FlexTable();
+
+    private void mergeTables(FlexTable sourceTable, FlexTable targetTable,
+                             int startRow, int startCol) {
+        for (int i = 0; i < sourceTable.getRowCount(); i++) {
+            for (int j = 0; j < sourceTable.getCellCount(i); j++) {
+                targetTable.setWidget(startRow + i, startCol + j, sourceTable.getWidget(i, j));
+            }
+        }
+    }
 }
