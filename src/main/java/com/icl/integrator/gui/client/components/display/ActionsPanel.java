@@ -80,7 +80,7 @@ public class ActionsPanel extends Composite {
 
     private void fillViews(int index) {
         infoPanel.clear();
-        infoPanel.add(new ActionDescriptorPanel(actions.get(index)));
+        infoPanel.add(new ActionDescriptorPanel(actions.get(index),fullService.getServiceName()));
     }
 
     private class ActionCreatedListener implements

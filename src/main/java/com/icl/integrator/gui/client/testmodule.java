@@ -10,6 +10,8 @@ import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.gui.client.components.IntegratorAsyncService;
 import com.icl.integrator.gui.client.components.display.ActionsPanel;
 import com.icl.integrator.gui.client.components.display.ServicesPanel;
+import com.icl.integrator.gui.shared.FieldVerifier;
+import com.icl.integrator.gui.shared.GuiException;
 
 import java.util.List;
 
@@ -32,8 +34,10 @@ public class testmodule implements EntryPoint {
 
 		final TextBox nameField = new TextBox();
 		final TextBox portField = new TextBox();
-		nameField.setText("localhost");
-        portField.setText("8080");
+        final TextBox deployPathField = new TextBox();
+		nameField.setText("192.168.83.91");
+        portField.setText("18080");
+        deployPathField.setText("integrator");
 		final Label errorLabel = new Label();
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
@@ -42,6 +46,7 @@ public class testmodule implements EntryPoint {
 		// Use RootPanel.get() to get the entire body element
 		RootPanel.get("hostContainer").add(nameField);
 		RootPanel.get("portContainer").add(portField);
+        RootPanel.get("deployPathContainer").add(deployPathField);
 		RootPanel.get("initClientContainer").add(sendButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
@@ -64,8 +69,16 @@ public class testmodule implements EntryPoint {
 				// Then, we send the input to the server.
                 textToServerLabel.setText(textToServer);
 				serverResponseLabel.setText("");
-				String text = portField.getText();
-				int i = Integer.parseInt(text);
+				String portString = portField.getText();
+                int port;
+                try {
+                    port = FieldVerifier.parseNumber(portString, 1, 65535);
+                }catch(GuiException ex){
+                    PopupPanel widgets = new PopupPanel(true,false);
+                    widgets.setWidget(new Label(ex.getMessage()));
+                    widgets.center();
+                    return;
+                }
 				GenericCallback<Void> callback = new GenericCallback<Void>() {
 
 					@Override
@@ -86,7 +99,7 @@ public class testmodule implements EntryPoint {
 								});
 					}
 				};
-                service.initClient(nameField.getText(), "", i, callback);
+                service.initClient(nameField.getText(), deployPathField.getText(), port, callback);
 			}
 		});
 	}

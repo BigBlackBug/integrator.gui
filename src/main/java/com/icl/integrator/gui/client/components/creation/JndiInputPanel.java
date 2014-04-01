@@ -28,8 +28,8 @@ public class JndiInputPanel extends Composite implements Creator<JndiItemPair> {
 
     @Override
     public JndiItemPair create() {
-        String propName= propNameTB.getText();
+        String propName = propNameTB.getText();
         String propValue = propValueTB.getText();
-        return new JndiItemPair(propName,propValue);
+        return new JndiItemPair(propName, propValue);
     }
 }

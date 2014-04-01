@@ -58,7 +58,7 @@ public class ActionDisplayPanel extends Composite{
 
     private void fillViews(int index) {
         infoPanel.clear();
-        infoPanel.add(new ActionDescriptorPanel(actions.get(index)));
+        infoPanel.add(new ActionDescriptorPanel(actions.get(index),serviceName));
     }
 
 

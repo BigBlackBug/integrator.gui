@@ -22,22 +22,28 @@ package com.icl.integrator.gui.shared;
  */
 public class FieldVerifier {
 
-    /**
-     * Verifies that the specified name is valid for our service.
-     * <p/>
-     * In this example, we only require that the name is at least four
-     * characters. In your application, you can use more complex checks to ensure
-     * that usernames, passwords, email addresses, URLs, and other fields have the
-     * proper syntax.
-     *
-     * @param name the name to validate
-     * @return true if valid, false if invalid
-     */
-    public static boolean isValidName(String name) {
+    public static final String IP_REGEXP =
+            "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+                    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+    public static void validateName(String name) {
         if (name == null) {
-            return false;
+            throw new GuiException("Значение не может быть null");
         }
-        return name.length() > 3;
+        if (name.length() == 0) {
+            throw new GuiException("Значение не может быть пустым");
+        }
+    }
+
+    public static void validateIP(String string) {
+        if (string == null) {
+            throw new GuiException("Значение не может быть null");
+        }
+        if (!string.matches(IP_REGEXP)) {
+            throw new GuiException("Значение не является валидным IP - адресом");
+        }
     }
 
     public static int parseNumber(String fieldText, int minimum,

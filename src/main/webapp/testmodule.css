@@ -35,3 +35,11 @@ h1 {
 
 .panel {
 }
+
+.statusAV {
+    color: green;
+}
+
+.statusNA {
+    color: red;
+}

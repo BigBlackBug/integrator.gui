@@ -21,7 +21,6 @@ public class HttpServiceInputDescriptionPanel extends InputDescriptionPanel {
     private FlexTable table = new FlexTable();
 
     public HttpServiceInputDescriptionPanel() {
-
         hostTB = new TextBox();
         hostTB.setWidth("100%");
         portTB = new TextBox();
@@ -36,14 +35,19 @@ public class HttpServiceInputDescriptionPanel extends InputDescriptionPanel {
     }
 
     @Override
-    public EndpointDescriptor create() {
+    public EndpointDescriptor create() throws CreationException {
+        String host = hostTB.getText();
+        String port = portTB.getText();
         try {
-            String host = hostTB.getText();
-            String delay = portTB.getText();
-            int portNumber = FieldVerifier.parseNumber(delay, 1);
+            FieldVerifier.validateIP(host);
+        } catch (GuiException gex) {
+            throw new CreationException(gex, "Адрес сервиса");
+        }
+        try {
+            int portNumber = FieldVerifier.parseNumber(port, 1);
             return new HttpEndpointDescriptorDTO(host, portNumber);
         } catch (GuiException gex) {
-            throw new CreationException(gex);
+            throw new CreationException(gex, "Порт сервиса");
         }
     }
 

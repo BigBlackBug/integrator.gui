@@ -1,5 +1,6 @@
 package com.icl.integrator.gui.client.components.creation.dialog;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
@@ -12,6 +13,7 @@ import com.icl.integrator.dto.util.EndpointType;
 import com.icl.integrator.gui.client.components.CreationListener;
 import com.icl.integrator.gui.client.components.creation.*;
 import com.icl.integrator.gui.client.util.CreationException;
+import com.icl.integrator.gui.shared.GuiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class AddServiceDialog extends DialogBox {
         typesBox.setSelectedIndex(0);
 
         deliverySettingsPanel = new DeliverySettingsPanel();
-        Button addActionButton = new Button("Накинуть ищо действий");
+        Button addActionButton = new Button("Накинуть действий");
         addActionButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -75,7 +77,8 @@ public class AddServiceDialog extends DialogBox {
                         @Override
                         public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
                 //выкидываем actionPanel
-                table.removeCell(1,3);
+                            table.removeCell(1, 3);//1
+                            table.removeCell(0, 2);//1
 //                table.getFlexCellFormatter().setRowSpan(1, 2, 2);
                 if (value != null) {
                     actionDesctiprors.add(value);
@@ -91,35 +94,49 @@ public class AddServiceDialog extends DialogBox {
                 actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
             }
             actionPanel.setWidth("100px");
-            table.setWidget(1,3,actionPanel);
-//            table.getFlexCellFormatter().setColSpan(3,0,2);
-            table.getFlexCellFormatter().setRowSpan(1, 3, 4);
-                center();
+                table.setWidget(0, 2, new HTML("<b><center>Добавление действия</center></b>"));
+                table.setWidget(1, 3, actionPanel);
+                table.getFlexCellFormatter().setRowSpan(1, 3, 4);
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    public void execute() {
+                        center();
+                    }
+                });
             }
         });
         addActionsLB = new ListBox();
         addActionsLB.setVisibleItemCount(5);
         addActionsLB.setHeight("100%");
 
+        //TODO накидать кучу проверок
         HorizontalPanel buttonPanel = new HorizontalPanel();
         Button createButton = new Button("Создать", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                String serviceName = serviceNamesTB.getText();
-                EndpointDescriptor endpointDescriptor = inputDescCreator.create();
+                String serviceName;
                 DeliverySettingsDTO deliverySettingsDTO;
+                EndpointDescriptor endpointDescriptor;
                 try {
+                    serviceName = getServiceName();
+                    endpointDescriptor = inputDescCreator.create();
                     deliverySettingsDTO = deliverySettingsPanel.create();
-                }catch(CreationException cex){
-                    PopupPanel widgets = new PopupPanel(true,false);
-                    widgets.setWidget(new Label(cex.getCause().getMessage()));
+                } catch (CreationException cex) {
+                    PopupPanel widgets = new PopupPanel(true, false);
+                    DockPanel panel = new DockPanel();
+                    HTML description =
+                            new HTML("<b><center>" + cex.getFailedSubjectDescription() +
+                                             "</center></b>");
+                    panel.add(description, DockPanel.NORTH);
+                    panel.add(new Label(cex.getCause().getMessage()), DockPanel.CENTER);
+                    widgets.setWidget(panel);
                     widgets.center();
                     return;
                 }
                 creationListener.onCreated(
                         new TargetRegistrationDTO<>(serviceName, endpointDescriptor,
                                                     deliverySettingsDTO,
-                                                    actionDesctiprors));
+                                                    actionDesctiprors)
+                                          );
                 hide();
             }
         });
@@ -162,6 +179,17 @@ public class AddServiceDialog extends DialogBox {
         table.getFlexCellFormatter().setRowSpan(1, 2, 4);
         table.setCellSpacing(7);
         table.setWidth("100%");
+        table.setBorderWidth(1);
+        setWidth("100%");
         setWidget(dock);
+    }
+
+    private String getServiceName() {
+        String serviceName = serviceNamesTB.getText();
+        if (serviceName.isEmpty()) {
+            throw new CreationException(new GuiException("Поле не может быть пустым"),
+                                        "Название сервиса");
+        }
+        return serviceName;
     }
 }

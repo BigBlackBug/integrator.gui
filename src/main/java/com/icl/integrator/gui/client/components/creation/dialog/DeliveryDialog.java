@@ -45,7 +45,7 @@ public class DeliveryDialog extends DialogBox {
                           final CreationListener<DeliveryDTO> creationListener) {
         setModal(true);
         DockPanel dockPanel = new DockPanel();
-        dockPanel.add(new HTML("<center>Диалоги о <s>животных</s> доставке</center>"),
+        dockPanel.add(new HTML("<center>Диалоги о доставке</center>"),
                       DockPanel.NORTH);
         this.actionToServiceMap = actionToService;
         actionsLB = new ListBox();

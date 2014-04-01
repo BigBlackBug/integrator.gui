@@ -23,6 +23,7 @@ public class JmsActionInputDescriptorPanel extends AbstractActionInputDescriptio
 
     public JmsActionInputDescriptorPanel() {
         actionMethodLB = new EnumListBox<>(ActionMethod.class);
+        actionMethodLB.setWidth("200px");
         password = new TextBox();
         password.setWidth("100%");
         queueName = new TextBox();

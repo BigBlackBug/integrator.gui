@@ -36,14 +36,20 @@ public class DeliverySettingsPanel extends Composite implements Creator<Delivery
 
     @Override
     public DeliverySettingsDTO create() throws CreationException {
+        int retNumber;
+        int delayNumber;
         try {
             String retryNumber = retryNumberTB.getText();
-            int retNumber = FieldVerifier.parseNumber(retryNumber, 0);
-            String delay = delayTB.getText();
-            int delayNumber = FieldVerifier.parseNumber(delay, 100);
-            return new DeliverySettingsDTO(retNumber, delayNumber);
+            retNumber = FieldVerifier.parseNumber(retryNumber, 0);
         } catch (GuiException gex) {
-            throw new CreationException(gex);
+            throw new CreationException(gex, "Количество повторов");
         }
+        try {
+            String delay = delayTB.getText();
+            delayNumber = FieldVerifier.parseNumber(delay, 100);
+        } catch (GuiException gex) {
+            throw new CreationException(gex, "Интервал между повторами");
+        }
+        return new DeliverySettingsDTO(retNumber, delayNumber);
     }
 }

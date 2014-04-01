@@ -13,6 +13,7 @@ import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
+import com.icl.integrator.gui.client.GenericCallback;
 import com.icl.integrator.gui.client.GreetingService;
 import com.icl.integrator.gui.client.GreetingServiceAsync;
 import com.icl.integrator.httpclient.IntegratorClientException;
@@ -162,7 +163,7 @@ public class IntegratorAsyncService {
             async.onFailure(caught);
             Throwable cause = caught.getCause();
             String message = (cause != null ? cause.toString() : caught.toString());
-            createDialog(message, null).center();
+            createDialog(message, null, "Неудачный запрос к интегратору").center();
         }
 
         @Override
@@ -172,12 +173,17 @@ public class IntegratorAsyncService {
                 SuccessDTO<T> response = result.getResponse();
                 async.onSuccess(response != null ? response.getResponseValue() : null);
             } else {
+                if(async instanceof GenericCallback){
+                    ((GenericCallback)async).onError(result.getError());
+                }
                 String errorMessage = result.getError().getErrorMessage();
-                createDialog(errorMessage, result.getError().getDeveloperMessage()).center();
+                createDialog(errorMessage, result.getError().getDeveloperMessage(),
+                             "Ответ от интегратора").center();
             }
         }
 
-        private DialogBox createDialog(final String message, final String extraMessage) {
+        private DialogBox createDialog(final String message, final String extraMessage,
+                                       String dialogHeader) {
             final DialogBox dialogBox = new DialogBox();
             final Button closeButton = new Button("С глаз моих долой!");
             closeButton.addClickHandler(new ClickHandler() {
@@ -201,6 +207,7 @@ public class IntegratorAsyncService {
                     public void onClick(ClickEvent event) {
                         HTML w = new HTML(extraMessage);
                         w.setWidth("500px");
+                        w.setWordWrap(true);
                         dialogVPanel.add(w);
                         button.setVisible(false);
                         dialogBox.getElement().getStyle().setProperty("width", "auto");
@@ -219,7 +226,7 @@ public class IntegratorAsyncService {
             dialogVPanel.add(closeButton);
             dialogBox.setWidget(dialogVPanel);
             dialogVPanel.setSpacing(3);
-            dialogBox.setText("Неудачный запрос к интегратору");
+            dialogBox.setText(dialogHeader);
             return dialogBox;
         }
     }

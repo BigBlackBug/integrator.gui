@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.FullServiceDTO;
 import com.icl.integrator.dto.IntegratorPacket;
+import com.icl.integrator.dto.ResponseDTO;
 import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.registration.ActionDescriptor;
@@ -17,6 +18,8 @@ import com.icl.integrator.gui.client.components.IntegratorAsyncService;
 import com.icl.integrator.gui.client.components.creation.dialog.AddServiceDialog;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ServicesPanel extends Composite {
 
@@ -55,10 +58,10 @@ public class ServicesPanel extends Composite {
                         new GenericCallback<RegistrationResultDTO>() {
                             @Override
                             public void onSuccess(RegistrationResultDTO result) {
-                                //TODO если хоть одна обломалась, то мб выкидывать на серваке еррор?
                                 PopupPanel widgets = new PopupPanel(true,false);
-                                widgets.setWidget(new Label("Сервис зареган"));
+                                widgets.setWidget(createReportTable(result.getActionRegistrationResponses()));
                                 widgets.center();
+
                                 service.getServiceList(
                                         new IntegratorPacket<Void, DestinationDescriptor>(),
                                         new GenericCallback<List<ServiceDTO>>() {
@@ -87,6 +90,31 @@ public class ServicesPanel extends Composite {
         table.getFlexCellFormatter().setRowSpan(0, 2, 3);
         table.setBorderWidth(1);
         initWidget(table);
+    }
+
+    private FlexTable createReportTable(Map<String, ResponseDTO<Void>> result) {
+        FlexTable table = new FlexTable();
+        int i = 1;
+        Set<Map.Entry<String, ResponseDTO<Void>>> entries = result.entrySet();
+        table.setWidget(0,0,new Label("Сервис зареган"));
+        table.getFlexCellFormatter().setColSpan(0,0,2);
+        for (Map.Entry<String, ResponseDTO<Void>> entry : entries) {
+            String actionName = entry.getKey();
+            ResponseDTO<Void> response = entry.getValue();
+            table.setWidget(i, 0, new Label(actionName));
+            Label statusLabel;
+            if (response.isSuccess()) {
+                statusLabel = new Label("OK");
+                statusLabel.setStyleName("statusAV");
+                table.setWidget(i, 1, statusLabel);
+            } else {
+                statusLabel = new Label(response.getError().getErrorMessage());
+                statusLabel.setStyleName("statusNA");
+                table.setWidget(i, 1, statusLabel);
+            }
+            i++;
+        }
+        return table;
     }
 
     private void refresh(List<ServiceDTO> services) {

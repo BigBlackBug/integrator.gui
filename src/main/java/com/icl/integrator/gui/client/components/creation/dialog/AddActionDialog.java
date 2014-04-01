@@ -54,7 +54,7 @@ public class AddActionDialog extends DialogBox {
         } else {
             actionDescriptorCreator = new JmsActionInputDescriptorPanel();
         }
-        forceRegisterCB = new CheckBox("Регать несмотря ни на что?");
+        forceRegisterCB = new CheckBox("Зарегать даже если действие недоступно?");
         FlexTable table = new FlexTable();
         table.setWidget(0, 0, forceRegisterCB);
         table.setWidget(1, 0, (Composite) actionDescriptorCreator);

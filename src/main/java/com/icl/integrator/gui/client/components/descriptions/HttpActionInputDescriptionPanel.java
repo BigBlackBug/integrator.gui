@@ -24,6 +24,7 @@ public class HttpActionInputDescriptionPanel extends AbstractActionInputDescript
         pathTB.setWidth("100%");
         table.setWidget(1, 0, new HTML("<b>Тип действия:</b>"));
         table.setWidget(1, 1, actionMethodLB);
+        actionMethodLB.setWidth("200px");
         table.setWidget(2, 0, new HTML("<b>Путь к сервису:</b>"));
         table.setWidget(2, 1, pathTB);
     }

@@ -10,7 +10,7 @@
     <artifactId>gui</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>GWT Maven Archetype</name>
+    <name>integrator-gui</name>
 
     <properties>
         <!-- Convenience property to set the GWT version -->
@@ -84,7 +84,7 @@
     <build>
         <!-- Generate compiled stuff in the folder used for developing mode -->
         <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
-
+        <finalName>gui</finalName>
         <plugins>
 
             <!-- GWT Maven Plugin -->
@@ -107,7 +107,7 @@
                 <configuration>
                     <runTarget>testmodule.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
-                    <i18nMessagesBundle>untitled6.client.Messages
+                    <i18nMessagesBundle>com.icl.integrator.gui.client.Messages
                     </i18nMessagesBundle>
                     <compileSourcesArtifacts>
                         <compileSourcesArtifact>com.icl.integrator:dto
