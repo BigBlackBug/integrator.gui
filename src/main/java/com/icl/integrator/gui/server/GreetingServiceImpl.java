@@ -7,6 +7,7 @@ import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
 import com.icl.integrator.gui.client.GreetingService;
 import com.icl.integrator.httpclient.IntegratorClientException;
+import com.icl.integrator.httpclient.IntegratorClientSettings;
 import com.icl.integrator.httpclient.IntegratorHttpClient;
 
 import java.util.List;
@@ -119,6 +120,8 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 
     private static class Client {
 
+        public static final int DEFAULT_TIMEOUT = 7500;
+
         private volatile IntegratorHttpClient instance = null;
 
         private Client() {
@@ -129,7 +132,10 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
         }
 
         public synchronized void init(String host, int port, String deployPath) {
-            instance = new IntegratorHttpClient(host, deployPath, port);
+            instance = new IntegratorHttpClient(host, deployPath, port,
+                                                new IntegratorClientSettings(
+                                                        DEFAULT_TIMEOUT, DEFAULT_TIMEOUT)
+            );
         }
 
     }

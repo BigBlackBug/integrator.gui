@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.icl.integrator.dto.FullServiceDTO;
+import com.icl.integrator.dto.registration.DeliverySettingsDTO;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.source.HttpEndpointDescriptorDTO;
 import com.icl.integrator.dto.source.JMSEndpointDescriptorDTO;
@@ -49,6 +50,11 @@ public class ServiceDescriptionPanel extends Composite {
             dialogVPanel.add(new HTML("<br><b>Параметры JNDI:</b>"));
             dialogVPanel.add(new HTML(jndiProperties+""));
         }
+        dialogVPanel.add(new HTML("<br><b>Интервал:</b>"));
+        DeliverySettingsDTO deliverySettings = fullServiceDTO.getDeliverySettings();
+        dialogVPanel.add(new HTML(deliverySettings.getRetryDelay() +""));
+        dialogVPanel.add(new HTML("<br><b>Количество повторов:</b>"));
+        dialogVPanel.add(new HTML(deliverySettings.getRetryNumber()+""));
 
         initWidget(dialogVPanel);
     }

@@ -135,8 +135,7 @@ public class AddServiceDialog extends DialogBox {
                 creationListener.onCreated(
                         new TargetRegistrationDTO<>(serviceName, endpointDescriptor,
                                                     deliverySettingsDTO,
-                                                    actionDesctiprors)
-                                          );
+                                                    actionDesctiprors));
                 hide();
             }
         });

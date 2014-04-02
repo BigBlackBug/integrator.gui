@@ -94,10 +94,11 @@ public class ServicesPanel extends Composite {
 
     private FlexTable createReportTable(Map<String, ResponseDTO<Void>> result) {
         FlexTable table = new FlexTable();
-        int i = 1;
+        int i = 2;
         Set<Map.Entry<String, ResponseDTO<Void>>> entries = result.entrySet();
-        table.setWidget(0,0,new Label("Сервис зареган"));
-        table.getFlexCellFormatter().setColSpan(0,0,2);
+        table.setWidget(0, 0, new Label("<center><b>Сервис зареган</center>/<b>"));
+        table.setWidget(1, 0, new Label("<center><b>Действие</center></b>"));
+        table.setWidget(1, 1, new Label("<center><b>Статус</center></b>"));
         for (Map.Entry<String, ResponseDTO<Void>> entry : entries) {
             String actionName = entry.getKey();
             ResponseDTO<Void> response = entry.getValue();
