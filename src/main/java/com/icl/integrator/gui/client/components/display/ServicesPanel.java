@@ -96,8 +96,13 @@ public class ServicesPanel extends Composite {
         FlexTable table = new FlexTable();
         int i = 1;
         Set<Map.Entry<String, ResponseDTO<Void>>> entries = result.entrySet();
-        table.setWidget(0,0,new Label("Сервис зареган"));
-        table.getFlexCellFormatter().setColSpan(0,0,2);
+        table.setWidget(0, 0, new HTML("<center><b>Сервис зареган</center>/<b>"));
+        table.getFlexCellFormatter().setColSpan(0, 0, 2);
+        if (!entries.isEmpty()) {
+            table.setWidget(1, 0, new HTML("<center><b>Действие</center></b>"));
+            table.setWidget(1, 1, new HTML("<center><b>Статус</center></b>"));
+            i++;
+        }
         for (Map.Entry<String, ResponseDTO<Void>> entry : entries) {
             String actionName = entry.getKey();
             ResponseDTO<Void> response = entry.getValue();

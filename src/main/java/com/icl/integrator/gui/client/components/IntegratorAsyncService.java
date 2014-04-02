@@ -185,7 +185,7 @@ public class IntegratorAsyncService {
         private DialogBox createDialog(final String message, final String extraMessage,
                                        String dialogHeader) {
             final DialogBox dialogBox = new DialogBox();
-            final Button closeButton = new Button("С глаз моих долой!");
+            final Button closeButton = new Button("Не верю!");
             closeButton.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     dialogBox.hide();

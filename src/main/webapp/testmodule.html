@@ -18,7 +18,7 @@
     <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
-    <title>Говногуй для интегратора</title>
+    <title>Официальный Графический Интерфейс Интегратора</title>
 
     <!--                                           -->
     <!-- This script loads your compiled module.   -->
@@ -33,7 +33,7 @@
   <!-- you can leave the body empty if you want  -->
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
-  <body background="bg.jpg">
+  <body>
 
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
@@ -46,16 +46,21 @@
       </div>
     </noscript>
 
-    <h1>Говногуй для интегратора</h1>
+    <h1>Официальный Графический Интерфейс Интегратора</h1>
 
     <table align="center">
         <tr>
             <td colspan="3" style="font-weight:bold;"><center>Адрес интегратора</center></td>
         </tr>
         <tr>
+            <td align="center">Хост</td>
+            <td align="center">Порт</td>
+            <td align="center">Путь</td>
+        </tr>
+        <tr>
             <td id="hostContainer"></td>
-            <td id="deployPathContainer"></td>
             <td id="portContainer"></td>
+            <td id="deployPathContainer"></td>
             <td id="initClientContainer"></td>
         </tr>
         <tr>
@@ -72,9 +77,8 @@
             <td align="center" style="font-weight:bold;">Действия сервиса</td>
         </tr>
         <tr>
-        <tr>
-            <td id="servicesContainer" height="100%"></td>
-            <td id="actionsContainer" height="100%"></td>
+            <td valign="top" id="servicesContainer" height="100%"></td>
+            <td valign="top" id="actionsContainer" height="100%"></td>
         </tr>
     </table>
   </body>

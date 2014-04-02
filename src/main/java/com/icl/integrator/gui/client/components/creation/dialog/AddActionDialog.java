@@ -48,7 +48,6 @@ public class AddActionDialog extends DialogBox {
         buttonPanel.add(closeButton);
         buttonPanel.add(createButton);
         dock.add(buttonPanel, DockPanel.SOUTH);
-        VerticalPanel mainPanel = new VerticalPanel();
         if (endpointType == EndpointType.HTTP) {
             actionDescriptorCreator = new HttpActionInputDescriptionPanel();
         } else {

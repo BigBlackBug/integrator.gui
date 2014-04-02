@@ -3,7 +3,7 @@ package com.icl.integrator.gui.client.components.creation;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ListBox;
 import com.icl.integrator.dto.ServiceAndActions;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
@@ -27,7 +27,7 @@ public class ResponseHandlerSelectorPanel extends Composite
     private Map<String, ServiceAndActions<ActionDescriptor>> services;
 
     public ResponseHandlerSelectorPanel(Map<String,ServiceAndActions<ActionDescriptor>> serviceList) {
-        HorizontalPanel panel = new HorizontalPanel();
+        Grid panel = new Grid(1,2);
         this.services = serviceList;
         servicesLB = new ListBox();
         servicesLB.setVisibleItemCount(10);
@@ -40,8 +40,8 @@ public class ResponseHandlerSelectorPanel extends Composite
             }
         });
         this.actionsPanel = new ActionDisplayPanel();
-        panel.add(servicesLB);
-        panel.add(actionsPanel);
+        panel.setWidget(0, 0, servicesLB);
+        panel.setWidget(0, 1, actionsPanel);
         refresh(serviceList);
         initWidget(panel);
     }

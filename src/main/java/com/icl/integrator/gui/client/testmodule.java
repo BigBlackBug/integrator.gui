@@ -53,8 +53,7 @@ public class testmodule implements EntryPoint {
 		// Focus the cursor on the name field when the app loads
 		sendButton.setFocus(true);
 //		nameField.selectAll();
-
-		// Create the popup dialog box
+        // Create the popup dialog box
 		final Button closeButton = new Button("Close");
 		// We can set the id of a widget by accessing its Element
 		closeButton.getElement().setId("closeButton");

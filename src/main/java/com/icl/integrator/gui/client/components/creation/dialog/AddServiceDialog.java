@@ -18,7 +18,6 @@ import com.icl.integrator.gui.shared.GuiException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO нигде в create е валидируются числа
 /**
  * Created by e.shahmaev on 19.03.14.
  */
@@ -68,6 +67,7 @@ public class AddServiceDialog extends DialogBox {
         typesBox.setSelectedIndex(0);
 
         deliverySettingsPanel = new DeliverySettingsPanel();
+        deliverySettingsPanel.setWidth("300px");
         Button addActionButton = new Button("Накинуть действий");
         addActionButton.addClickHandler(new ClickHandler() {
             @Override
@@ -93,11 +93,10 @@ public class AddServiceDialog extends DialogBox {
             } else {
                 actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
             }
-            actionPanel.setWidth("100px");
-                table.setWidget(0, 2, new HTML("<b><center>Добавление действия</center></b>"));
-                table.setWidget(1, 3, actionPanel);
-                table.getFlexCellFormatter().setRowSpan(1, 3, 4);
-                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            table.setWidget(0, 2, new HTML("<b><center>Добавление действия</center></b>"));
+            table.setWidget(1, 3, actionPanel);
+            table.getFlexCellFormatter().setRowSpan(1, 3, 4);
+            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                     public void execute() {
                         center();
                     }
@@ -113,31 +112,30 @@ public class AddServiceDialog extends DialogBox {
         Button createButton = new Button("Создать", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                String serviceName;
-                DeliverySettingsDTO deliverySettingsDTO;
-                EndpointDescriptor endpointDescriptor;
-                try {
-                    serviceName = getServiceName();
-                    endpointDescriptor = inputDescCreator.create();
-                    deliverySettingsDTO = deliverySettingsPanel.create();
-                } catch (CreationException cex) {
-                    PopupPanel widgets = new PopupPanel(true, false);
-                    DockPanel panel = new DockPanel();
-                    HTML description =
-                            new HTML("<b><center>" + cex.getFailedSubjectDescription() +
-                                             "</center></b>");
-                    panel.add(description, DockPanel.NORTH);
-                    panel.add(new Label(cex.getCause().getMessage()), DockPanel.CENTER);
-                    widgets.setWidget(panel);
-                    widgets.center();
-                    return;
-                }
-                creationListener.onCreated(
-                        new TargetRegistrationDTO<>(serviceName, endpointDescriptor,
-                                                    deliverySettingsDTO,
-                                                    actionDesctiprors)
-                                          );
-                hide();
+            String serviceName;
+            DeliverySettingsDTO deliverySettingsDTO;
+            EndpointDescriptor endpointDescriptor;
+            try {
+                serviceName = getServiceName();
+                endpointDescriptor = inputDescCreator.create();
+                deliverySettingsDTO = deliverySettingsPanel.create();
+            } catch (CreationException cex) {
+                PopupPanel widgets = new PopupPanel(true, false);
+                DockPanel panel = new DockPanel();
+                HTML description =
+                        new HTML("<b><center>" + cex.getFailedSubjectDescription() +
+                                         "</center></b>");
+                panel.add(description, DockPanel.NORTH);
+                panel.add(new Label(cex.getCause().getMessage()), DockPanel.CENTER);
+                widgets.setWidget(panel);
+                widgets.center();
+                return;
+            }
+            creationListener.onCreated(
+                    new TargetRegistrationDTO<>(serviceName, endpointDescriptor,
+                                                deliverySettingsDTO,
+                                                actionDesctiprors));
+            hide();
             }
         });
 

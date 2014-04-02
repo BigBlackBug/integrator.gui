@@ -15,7 +15,8 @@ import java.util.List;
 /**
  * Created by e.shahmaev on 21.03.14.
  */
-public class ActionDisplayPanel extends Composite{
+public class ActionDisplayPanel extends Composite {
+
     private final ListBox listBox;
 
     private final VerticalPanel infoPanel;
@@ -37,7 +38,7 @@ public class ActionDisplayPanel extends Composite{
         initWidget(mainPanel);
     }
 
-    public void setActions(String service,List<ActionEndpointDTO<ActionDescriptor>> actions) {
+    public void setActions(String service, List<ActionEndpointDTO<ActionDescriptor>> actions) {
         this.serviceName = service;
         setAllActions(actions);
     }
@@ -58,11 +59,11 @@ public class ActionDisplayPanel extends Composite{
 
     private void fillViews(int index) {
         infoPanel.clear();
-        infoPanel.add(new ActionDescriptorPanel(actions.get(index),serviceName));
+        infoPanel.add(new ActionDescriptorPanel(actions.get(index), serviceName));
     }
 
 
-    public ActionEndpointDTO<ActionDescriptor> getSelected(){
+    public ActionEndpointDTO<ActionDescriptor> getSelected() {
         int selectedIndex = listBox.getSelectedIndex();
         return actions.get(selectedIndex);
     }

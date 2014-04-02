@@ -36,6 +36,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target/.generated" />
+      <excludeFolder url="file://$MODULE_DIR$/target/gui" />
       <excludeFolder url="file://$MODULE_DIR$/target/gui-1.0-SNAPSHOT" />
       <excludeFolder url="file://$MODULE_DIR$/target/gwt-unitCache" />
       <excludeFolder url="file://$MODULE_DIR$/target/integrator" />
@@ -69,6 +70,9 @@
     <orderEntry type="library" name="Maven: com.icl.integrator:dto:1.5" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
     <orderEntry type="library" name="Maven: com.icl.integrator:deserializer:1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.2" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.6" level="project" />
     <orderEntry type="library" name="Maven: com.icl.integrator:dto:sources:1.5" level="project" />
     <orderEntry type="library" name="Maven: com.icl.integrator:api:sources:1.5" level="project" />
     <orderEntry type="library" name="Maven: com.icl.integrator:http-client:sources:1.5" level="project" />
