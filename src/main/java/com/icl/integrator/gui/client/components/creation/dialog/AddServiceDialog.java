@@ -107,7 +107,6 @@ public class AddServiceDialog extends DialogBox {
         addActionsLB.setVisibleItemCount(5);
         addActionsLB.setHeight("100%");
 
-        //TODO накидать кучу проверок
         HorizontalPanel buttonPanel = new HorizontalPanel();
         Button createButton = new Button("Создать", new ClickHandler() {
             @Override
@@ -171,7 +170,6 @@ public class AddServiceDialog extends DialogBox {
         addActionsLB.setWidth("100%");
         addActionsLB.setHeight("100%");
         table.setWidget(1, 2, addActionsLB);
-//        table.getFlexCellFormatter().setRowSpan(1, 2, 3);
         table.setWidget(4, 0, deliverySettingsPanel);
         table.getFlexCellFormatter().setColSpan(4, 0, 2);
         table.getFlexCellFormatter().setRowSpan(1, 2, 4);

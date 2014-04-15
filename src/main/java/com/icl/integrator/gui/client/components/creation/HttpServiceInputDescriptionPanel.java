@@ -44,7 +44,7 @@ public class HttpServiceInputDescriptionPanel extends InputDescriptionPanel {
             throw new CreationException(gex, "Адрес сервиса");
         }
         try {
-            int portNumber = FieldVerifier.parseNumber(port, 1);
+            int portNumber = FieldVerifier.parseNumber(port, 1, 65535);
             return new HttpEndpointDescriptorDTO(host, portNumber);
         } catch (GuiException gex) {
             throw new CreationException(gex, "Порт сервиса");

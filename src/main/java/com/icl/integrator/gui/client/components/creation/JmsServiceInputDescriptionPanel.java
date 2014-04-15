@@ -58,8 +58,8 @@ public class JmsServiceInputDescriptionPanel extends InputDescriptionPanel {
             JndiInputPanel newPanel = new JndiInputPanel(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    table.removeRow(table.getRowCount()-1);
-                    jndiPanels.remove(jndiPanels.size()-1);
+                table.removeRow(table.getRowCount()-1);
+                jndiPanels.remove(jndiPanels.size()-1);
                 }
             });
             table.setWidget(3 + jndiPanels.size(), 0, newPanel);
