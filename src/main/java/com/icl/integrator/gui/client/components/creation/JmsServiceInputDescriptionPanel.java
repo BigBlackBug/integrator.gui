@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.source.JMSEndpointDescriptorDTO;
+import com.icl.integrator.gui.client.components.FixedBorderTextBox;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,14 +19,12 @@ public class JmsServiceInputDescriptionPanel extends InputDescriptionPanel {
 
     private final FlexTable table = new FlexTable();
 
-    private final TextBox cfTB;
+    private final FixedBorderTextBox cfTB;
 
     private List<JndiInputPanel> jndiPanels = new ArrayList<>();
 
     public JmsServiceInputDescriptionPanel() {
-
-        cfTB = new TextBox();
-        cfTB.setWidth("100%");
+        cfTB = new FixedBorderTextBox();
         table.setWidget(0, 0, new HTML("<b>ConnectionFactory:</b>"));
         table.setWidget(0, 1, cfTB);
         table.setWidget(1, 0, new Button("Добавить настройку JNDI", new Handler()));

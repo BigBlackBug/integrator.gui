@@ -11,6 +11,7 @@ import com.icl.integrator.dto.registration.TargetRegistrationDTO;
 import com.icl.integrator.dto.source.EndpointDescriptor;
 import com.icl.integrator.dto.util.EndpointType;
 import com.icl.integrator.gui.client.components.CreationListener;
+import com.icl.integrator.gui.client.components.FixedBorderTextBox;
 import com.icl.integrator.gui.client.components.creation.*;
 import com.icl.integrator.gui.client.util.CreationException;
 import com.icl.integrator.gui.shared.GuiException;
@@ -25,23 +26,24 @@ public class AddServiceDialog extends DialogBox {
 
     private final ListBox typesBox;
 
-    private final TextBox serviceNamesTB;
+    private final FixedBorderTextBox serviceNamesTB;
 
     private final DeliverySettingsPanel deliverySettingsPanel;
 
     private final ListBox addActionsLB;
 
-    FlexTable table = new FlexTable();
+    private final FlexTable table = new FlexTable();
 
     private InputDescriptionPanel inputDescCreator;
 
-    private List<ActionRegistrationDTO<ActionDescriptor>> actionDesctiprors = new ArrayList<>();
+	private AddActionPanel addActionPanel;
+
+    private List<ActionRegistrationDTO<ActionDescriptor>> actionDescriptors = new ArrayList<>();
 
     public AddServiceDialog(final CreationListener<TargetRegistrationDTO<ActionDescriptor>>
                                     creationListener) {
         setText("Создание сервиса");
-        serviceNamesTB = new TextBox();
-        serviceNamesTB.setWidth("100%");
+        serviceNamesTB = new FixedBorderTextBox();
         typesBox = new ListBox();
         typesBox.setVisibleItemCount(2);
         typesBox.addItem("HTTP");
@@ -60,6 +62,9 @@ public class AddServiceDialog extends DialogBox {
                 }
                 table.setWidget(3,0,inputDescCreator);
                 table.getFlexCellFormatter().setColSpan(3,0,2);
+	            if(addActionPanel != null) {
+		            new CH().onClick(null);
+	            }
             }
         });
         inputDescCreator = new HttpServiceInputDescriptionPanel();
@@ -69,40 +74,7 @@ public class AddServiceDialog extends DialogBox {
         deliverySettingsPanel = new DeliverySettingsPanel();
         deliverySettingsPanel.setWidth("300px");
         Button addActionButton = new Button("Накинуть действий");
-        addActionButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-            CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
-                    CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
-                        @Override
-                        public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
-                //выкидываем actionPanel
-                            table.removeCell(1, 3);//1
-                            table.removeCell(0, 2);//1
-//                table.getFlexCellFormatter().setRowSpan(1, 2, 2);
-                if (value != null) {
-                    actionDesctiprors.add(value);
-                    addActionsLB.addItem(value.getAction().getActionName());
-                }
-                        }
-                    };
-            int selectedIndex = typesBox.getSelectedIndex();
-            AddActionPanel actionPanel;
-            if (selectedIndex == 0) { //http
-                actionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
-            } else {
-                actionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
-            }
-            table.setWidget(0, 2, new HTML("<b><center>Добавление действия</center></b>"));
-            table.setWidget(1, 3, actionPanel);
-            table.getFlexCellFormatter().setRowSpan(1, 3, 4);
-            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                    public void execute() {
-                        center();
-                    }
-                });
-            }
-        });
+        addActionButton.addClickHandler(new CH());
         addActionsLB = new ListBox();
         addActionsLB.setVisibleItemCount(5);
         addActionsLB.setHeight("100%");
@@ -133,7 +105,7 @@ public class AddServiceDialog extends DialogBox {
             creationListener.onCreated(
                     new TargetRegistrationDTO<>(serviceName, endpointDescriptor,
                                                 deliverySettingsDTO,
-                                                actionDesctiprors));
+                                                actionDescriptors));
             hide();
             }
         });
@@ -188,4 +160,40 @@ public class AddServiceDialog extends DialogBox {
         }
         return serviceName;
     }
+
+	private class CH implements ClickHandler {
+
+		public void onClick(ClickEvent event) {
+			CreationListener<ActionRegistrationDTO<ActionDescriptor>> creationListener1 = new
+					CreationListener<ActionRegistrationDTO<ActionDescriptor>>() {
+						@Override
+						public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
+							//выкидываем addActionPanel
+							table.removeCell(1, 3);//1
+							table.removeCell(0, 2);//1
+//                table.getFlexCellFormatter().setRowSpan(1, 2, 2);
+							if (value != null) {
+								actionDescriptors.add(value);
+								addActionsLB.addItem(value.getAction().getActionName());
+							}
+							addActionPanel = null;
+						}
+					};
+			int selectedIndex = typesBox.getSelectedIndex();
+
+			if (selectedIndex == 0) { //http
+				addActionPanel = new AddActionPanel(EndpointType.HTTP, creationListener1);
+			} else {
+				addActionPanel = new AddActionPanel(EndpointType.JMS, creationListener1);
+			}
+			table.setWidget(0, 2, new HTML("<b><center>Добавление действия</center></b>"));
+			table.setWidget(1, 3, addActionPanel);
+			table.getFlexCellFormatter().setRowSpan(1, 3, 4);
+			Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+				public void execute() {
+					center();
+				}
+			});
+		}
+	}
 }
