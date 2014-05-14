@@ -40,63 +40,63 @@ public class IntegratorAsyncService{
 
 	public void login(String username, String password, AsyncCallback<Void> async)
 			throws IntegratorClientException {
-		service.login(username, password, new LoadingCallback<>(async));
+		service.login(username, password, new LoadingCallback<Void>(async));
 	}
 
 	public void logout(AsyncCallback<Void> async) throws IntegratorClientException {
-		service.logout(new LoadingCallback<>(async));
+		service.logout(new LoadingCallback<Void>(async));
 	}
 
 	public void initClient(String host, String deployPath, int port, AsyncCallback<Void> async)
 			throws IntegratorClientException {
-		service.initClient(host, deployPath, port, new LoadingCallback<>(async));
+		service.initClient(host, deployPath, port, new LoadingCallback<Void>(async));
 	}
 
 	public <T extends DestinationDescriptor> void deliver(IntegratorPacket<DeliveryDTO, T> delivery,
                                                           AsyncCallback<Map<String, ResponseDTO<String>>> async)
             throws IntegratorClientException {
-        service.deliver(delivery, new IntegratorLoadingCallback<>(async));
+        service.deliver(delivery, new IntegratorLoadingCallback<Map<String, ResponseDTO<String>>>(async));
     }
 
     public <T extends ActionDescriptor, Y extends DestinationDescriptor> void registerService(
             IntegratorPacket<TargetRegistrationDTO<T>, Y> registrationDTO,
             AsyncCallback<List<ActionRegistrationResultDTO>> async)
             throws IntegratorClientException {
-        service.registerService(registrationDTO, new IntegratorLoadingCallback<>(async));
+        service.registerService(registrationDTO, new IntegratorLoadingCallback<List<ActionRegistrationResultDTO>>(async));
 
     }
 
     public <T extends DestinationDescriptor> void getServiceList(IntegratorPacket<Void, T> packet,
                                                                  AsyncCallback<List<ServiceDTO>> async)
             throws IntegratorClientException {
-        service.getServiceList(packet, new IntegratorLoadingCallback<>(async));
+        service.getServiceList(packet, new IntegratorLoadingCallback<List<ServiceDTO>>(async));
     }
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor> void getSupportedActions(
             IntegratorPacket<String, T> serviceDTO,
             AsyncCallback<List<ActionEndpointDTO<Y>>> async)
             throws IntegratorClientException {
-        service.getSupportedActions(serviceDTO, new IntegratorLoadingCallback<>(async));
+        service.getSupportedActions(serviceDTO, new IntegratorLoadingCallback<List<ActionEndpointDTO<Y>>>(async));
     }
 
     public <ADType extends ActionDescriptor, DDType extends DestinationDescriptor> void getServiceInfo(
             IntegratorPacket<String, DDType> serviceDTO,
             AsyncCallback<FullServiceDTO<ADType>> async)
             throws IntegratorClientException {
-        service.getServiceInfo(serviceDTO, new IntegratorLoadingCallback<>(async));
+        service.getServiceInfo(serviceDTO, new IntegratorLoadingCallback<FullServiceDTO<ADType>>(async));
     }
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor> void addAction(
             IntegratorPacket<AddActionDTO<Y>, T> actionDTO, AsyncCallback<Void> async)
     throws IntegratorClientException {
-        service.addAction(actionDTO, new IntegratorLoadingCallback<>(async));
+        service.addAction(actionDTO, new IntegratorLoadingCallback<Void>(async));
     }
 
     public <T extends DestinationDescriptor> void getActionsForDelivery(
             IntegratorPacket<Void, T> packet,
             AsyncCallback<List<DeliveryActionsDTO>> async)
     throws IntegratorClientException {
-        service.getActionsForDelivery(packet, new IntegratorLoadingCallback<>(async));
+        service.getActionsForDelivery(packet, new IntegratorLoadingCallback<List<DeliveryActionsDTO>>(async));
     }
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor> void getServicesSupportingActionType(
@@ -104,13 +104,13 @@ public class IntegratorAsyncService{
             AsyncCallback<List<ServiceAndActions<Y>>> async)
     throws IntegratorClientException {
         service.getServicesSupportingActionType(packet,
-                                                new IntegratorLoadingCallback<>(async));
+                                                new IntegratorLoadingCallback<List<ServiceAndActions<Y>>>(async));
     }
 
     public <T extends DestinationDescriptor>
     void
     isAvailable(IntegratorPacket<ServiceDestinationDescriptor,T> packet, AsyncCallback<Boolean> async){
-        service.isAvailable(packet,new IntegratorLoadingCallback<>(async));
+        service.isAvailable(packet,new IntegratorLoadingCallback<Boolean>(async));
     }
 
     private static final class LoadingCallback<T> extends AbstractCallback<T> {
