@@ -41,7 +41,7 @@ public class DeliveryDialog extends DialogBox {
     private final CheckBox integratorResponseCB;
 
     public DeliveryDialog(final List<DeliveryActionsDTO> actionToService,
-                          Map<String, ServiceAndActions<ActionDescriptor>> services,
+                          List<ServiceAndActions<ActionDescriptor>> services,
                           final CreationListener<DeliveryDTO> creationListener) {
         setModal(true);
         DockPanel dockPanel = new DockPanel();
@@ -99,12 +99,12 @@ public class DeliveryDialog extends DialogBox {
                 } else {
                     int selectedIndex = actionsLB.getSelectedIndex();
                     String selectedAction = actionsLB.getValue(selectedIndex);
-                    List<ServiceDTO> destinations = new ArrayList<>();
+                    List<String> destinations = new ArrayList<>();
                     for (int i = 0; i < servicesLB.getItemCount(); i++) {
                         if (servicesLB.isItemSelected(i)) {
                             List<ServiceDTO> services1 =
                                     actionToServiceMap.get(selectedIndex).getServices();
-                            destinations.add(services1.get(i));
+                            destinations.add(services1.get(i).getServiceName());
                         }
                     }
                     if(destinations.isEmpty()){

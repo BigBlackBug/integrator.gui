@@ -48,11 +48,11 @@
     <orderEntry type="library" scope="TEST" name="Maven: javax.validation:validation-api:sources:1.0.0.GA" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.json:json:20090211" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.7" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:http-client:1.5" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:http-client:1.6-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.2.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.2.3" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:spring-api:1.5" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:spring-api:1.6-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-web:3.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-aop:3.2.6.RELEASE" level="project" />
@@ -62,16 +62,18 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-context:3.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:3.2.6.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-webmvc:3.2.6.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:api:1.5" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:dto:1.5" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:api:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:dto:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:util:1.6-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:deserializer:1.5" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:deserializer:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.2" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.6" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:dto:sources:1.5" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:api:sources:1.5" level="project" />
-    <orderEntry type="library" name="Maven: com.icl.integrator:http-client:sources:1.5" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:dto:sources:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:api:sources:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:http-client:sources:1.6-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: com.icl.integrator:util:sources:1.6-SNAPSHOT" level="project" />
   </component>
 </module>
 

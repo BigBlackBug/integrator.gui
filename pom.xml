@@ -15,6 +15,7 @@
     <properties>
         <!-- Convenience property to set the GWT version -->
         <gwtVersion>2.6.0</gwtVersion>
+        <integrator.version>1.6-SNAPSHOT</integrator.version>
         <!-- GWT needs at least java 1.5 -->
         <webappDirectory>${project.build.directory}/${project.build.finalName}
         </webappDirectory>
@@ -77,13 +78,13 @@
         <dependency>
             <groupId>com.icl.integrator</groupId>
             <artifactId>http-client</artifactId>
-            <version>1.5</version>
+            <version>${integrator.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.2.3</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.sencha.gxt</groupId>-->
+            <!--<artifactId>gxt</artifactId>-->
+            <!--<version>3.0.1</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>
@@ -120,6 +121,8 @@
                         <compileSourcesArtifact>com.icl.integrator:api
                         </compileSourcesArtifact>
                         <compileSourcesArtifact>com.icl.integrator:http-client
+                        </compileSourcesArtifact>
+                        <compileSourcesArtifact>com.icl.integrator:util
                         </compileSourcesArtifact>
                     </compileSourcesArtifacts>
                 </configuration>

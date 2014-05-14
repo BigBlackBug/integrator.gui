@@ -5,7 +5,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
 import com.icl.integrator.dto.FullServiceDTO;
 import com.icl.integrator.dto.IntegratorPacket;
-import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
 import com.icl.integrator.dto.registration.ActionRegistrationDTO;
@@ -26,7 +25,9 @@ public class ActionsPanel extends Composite {
 
     private final VerticalPanel infoPanel;
 
-    private List<ActionEndpointDTO<ActionDescriptor>> actions;
+	private final Button removeActionButton;
+
+	private List<ActionEndpointDTO<ActionDescriptor>> actions;
 
     private FullServiceDTO<ActionDescriptor> fullService;
 
@@ -37,12 +38,18 @@ public class ActionsPanel extends Composite {
             @Override
             public void onClick(ClickEvent event) {
                 new AddActionDialog(fullService.getEndpoint().getEndpointType(),
-                                    new ActionCreatedListener()).center();
+                                    new ActionRegistrationDTOCreatedListener()).center();
             }
         });
-        Button removeAction = new Button("-");
-        removeAction.setWidth("100%");
-        removeAction.setEnabled(false);
+        this.removeActionButton = new Button("-");
+	    removeActionButton.addClickHandler(new ClickHandler() {
+		    @Override
+		    public void onClick(ClickEvent event) {
+			    //TODO add method
+		    }
+	    });
+        removeActionButton.setWidth("100%");
+        removeActionButton.setEnabled(false);
         listBox = new ListBox();
         listBox.setVisibleItemCount(10);
         listBox.addClickHandler(new ActionsListBoxClickHandler());
@@ -50,7 +57,7 @@ public class ActionsPanel extends Composite {
 
         FlexTable table = new FlexTable();
         table.setWidget(0, 0, addActionButton);
-        table.setWidget(0, 1, removeAction);
+        table.setWidget(0, 1, removeActionButton);
         table.setWidget(1, 0, listBox);
         table.getFlexCellFormatter().setColSpan(1, 0, 2);
         table.setWidget(0, 2, infoPanel);
@@ -81,31 +88,28 @@ public class ActionsPanel extends Composite {
     private void fillViews(int index) {
         infoPanel.clear();
         infoPanel.add(new ActionDescriptorPanel(actions.get(index),fullService.getServiceName()));
+	    removeActionButton.setEnabled(
+			    IntegratorAsyncService.getUsername().equals(fullService.getCreatorName()));
     }
 
-    private class ActionCreatedListener implements
+    private class ActionRegistrationDTOCreatedListener implements
             CreationListener<ActionRegistrationDTO<ActionDescriptor>> {
 
         @Override
         public void onCreated(ActionRegistrationDTO<ActionDescriptor> value) {
-            final ServiceDTO serviceDTO =
-                    new ServiceDTO(fullService.getServiceName(),
-                                   fullService.getEndpoint()
-                                           .getEndpointType()
-                    );
             AddActionDTO<ActionDescriptor> addActionDTO =
-                    new AddActionDTO<>(serviceDTO, value);
+                    new AddActionDTO<>(fullService.getServiceName(), value);
             service.addAction(new IntegratorPacket<>(addActionDTO),
-                              new RefillPanelsCallback(serviceDTO));
+                              new RefillPanelsCallback(fullService.getServiceName()));
         }
     }
 
     private class RefillPanelsCallback extends GenericCallback<Void> {
 
-        private final ServiceDTO serviceDTO;
+        private final String serviceName;
 
-        protected RefillPanelsCallback(ServiceDTO serviceDTO) {
-            this.serviceDTO = serviceDTO;
+        protected RefillPanelsCallback(String serviceName) {
+            this.serviceName = serviceName;
         }
 
         @Override
@@ -114,7 +118,7 @@ public class ActionsPanel extends Composite {
             widgets.setWidget(new Label("Действие добавлено"));
             widgets.center();
             service.getSupportedActions(
-                new IntegratorPacket<>(serviceDTO),
+                new IntegratorPacket<>(serviceName),
                 new GenericCallback<
                         List<ActionEndpointDTO<ActionDescriptor>>>() {
                     @Override

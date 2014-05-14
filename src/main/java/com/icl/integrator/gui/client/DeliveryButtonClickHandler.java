@@ -23,14 +23,12 @@ import java.util.Set;
  */
 public class DeliveryButtonClickHandler implements ClickHandler {
 
-    private final IntegratorAsyncService
-            service = GreetingServiceAsync.Util.getInstance();
+    private final IntegratorAsyncService service = GreetingServiceAsync.Util.getInstance();
 
     @Override
     public void onClick(ClickEvent event) {
-        service.getActionsForDelivery(new IntegratorPacket<Void,
-                DestinationDescriptor>(), new GetServicesCallback());
-
+	    service.getActionsForDelivery(new IntegratorPacket<Void, DestinationDescriptor>(),
+	                                  new GetServicesCallback());
     }
 
     private class GetServicesCallback extends GenericCallback<List<DeliveryActionsDTO>> {
@@ -44,7 +42,7 @@ public class DeliveryButtonClickHandler implements ClickHandler {
     }
 
     private class ShowDeliveryDialogCallback extends GenericCallback<
-                Map<String,ServiceAndActions<ActionDescriptor>>> {
+                List<ServiceAndActions<ActionDescriptor>>> {
 
         private final List<DeliveryActionsDTO> deliveryActions;
 
@@ -53,13 +51,13 @@ public class DeliveryButtonClickHandler implements ClickHandler {
         }
 
         @Override
-        public void onSuccess(Map<String, ServiceAndActions<ActionDescriptor>> result) {
-            new DeliveryDialog(deliveryActions,result,
+        public void onSuccess(List<ServiceAndActions<ActionDescriptor>> result) {
+            new DeliveryDialog(deliveryActions, result,
                new CreationListener<DeliveryDTO>() {
                    @Override
                    public void onCreated(DeliveryDTO value) {
-                       System.out.println("ready to deliver " + value);
-                       deliver(value);
+                   System.out.println("ready to deliver " + value);
+                   deliver(value);
                    }
                }
             ).center();
@@ -96,7 +94,7 @@ public class DeliveryButtonClickHandler implements ClickHandler {
                     statusLabel = new Label("OK");
                     statusLabel.setStyleName("statusAV");
                     table.setWidget(i, 1, statusLabel);
-                    table.setWidget(i, 2, new Label(response.getResponse().getResponseValue()));
+                    table.setWidget(i, 2, new Label(response.getResponse()));
                 } else {
                     statusLabel = new Label(response.getError().getErrorMessage());
                     statusLabel.setStyleName("statusNA");

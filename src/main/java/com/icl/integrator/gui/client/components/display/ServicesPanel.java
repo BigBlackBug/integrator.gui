@@ -9,7 +9,7 @@ import com.icl.integrator.dto.ResponseDTO;
 import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.registration.ActionDescriptor;
-import com.icl.integrator.dto.registration.RegistrationResultDTO;
+import com.icl.integrator.dto.registration.ActionRegistrationResultDTO;
 import com.icl.integrator.dto.registration.TargetRegistrationDTO;
 import com.icl.integrator.gui.client.GenericCallback;
 import com.icl.integrator.gui.client.GreetingServiceAsync;
@@ -18,8 +18,6 @@ import com.icl.integrator.gui.client.components.IntegratorAsyncService;
 import com.icl.integrator.gui.client.components.creation.dialog.AddServiceDialog;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ServicesPanel extends Composite {
 
@@ -31,11 +29,17 @@ public class ServicesPanel extends Composite {
 
     private final ListBox list;
 
-    private List<ServiceDTO> services;
+	private final Button removeServiceButton;
+
+	private List<ServiceDTO> services;
 
     public ServicesPanel(List<ServiceDTO> aservices,
                          final ActionsPanel actionsPanel) {
         this.list = new ListBox();
+	    this.removeServiceButton = new Button("-");
+	    removeServiceButton.setEnabled(false);
+	    removeServiceButton.setWidth("100%");
+
         list.setVisibleItemCount(10);
         list.addClickHandler(new ClickHandler() {
             @Override
@@ -55,11 +59,11 @@ public class ServicesPanel extends Composite {
                     public void onCreated(TargetRegistrationDTO<ActionDescriptor> value) {
                         service.registerService(
                         new IntegratorPacket<>(value),
-                        new GenericCallback<RegistrationResultDTO>() {
+                        new GenericCallback<List<ActionRegistrationResultDTO>>() {
                             @Override
-                            public void onSuccess(RegistrationResultDTO result) {
+                            public void onSuccess(List<ActionRegistrationResultDTO> result) {
                                 PopupPanel widgets = new PopupPanel(true,false);
-                                widgets.setWidget(createReportTable(result.getActionRegistrationResponses()));
+                                widgets.setWidget(createReportTable(result));
                                 widgets.center();
 
                                 service.getServiceList(
@@ -76,9 +80,6 @@ public class ServicesPanel extends Composite {
                 }).center();
             }
         });
-        Button removeServiceButton = new Button("-");
-        removeServiceButton.setEnabled(false);
-        removeServiceButton.setWidth("100%");
         infoPanel = new VerticalPanel();
 
         FlexTable table = new FlexTable();
@@ -92,20 +93,19 @@ public class ServicesPanel extends Composite {
         initWidget(table);
     }
 
-    private FlexTable createReportTable(Map<String, ResponseDTO<Void>> result) {
+    private FlexTable createReportTable(List<ActionRegistrationResultDTO> result) {
         FlexTable table = new FlexTable();
         int i = 1;
-        Set<Map.Entry<String, ResponseDTO<Void>>> entries = result.entrySet();
         table.setWidget(0, 0, new HTML("<center><b>Сервис зареган</center>/<b>"));
         table.getFlexCellFormatter().setColSpan(0, 0, 2);
-        if (!entries.isEmpty()) {
+        if (!result.isEmpty()) {
             table.setWidget(1, 0, new HTML("<center><b>Действие</center></b>"));
             table.setWidget(1, 1, new HTML("<center><b>Статус</center></b>"));
             i++;
         }
-        for (Map.Entry<String, ResponseDTO<Void>> entry : entries) {
-            String actionName = entry.getKey();
-            ResponseDTO<Void> response = entry.getValue();
+        for (ActionRegistrationResultDTO entry : result) {
+            String actionName = entry.getActionName();
+            ResponseDTO<Void> response = entry.getRegistrationResult();
             table.setWidget(i, 0, new Label(actionName));
             Label statusLabel;
             if (response.isSuccess()) {
@@ -136,7 +136,8 @@ public class ServicesPanel extends Composite {
 
     public void refillViews(int index) {
         ServiceDTO serviceDTO = services.get(index);
-        service.getServiceInfo(new IntegratorPacket<>(serviceDTO),
+	    removeServiceButton.setEnabled(IntegratorAsyncService.getUsername().equals(serviceDTO.getCreator()));
+        service.getServiceInfo(new IntegratorPacket<>(serviceDTO.getServiceName()),
            new GenericCallback<FullServiceDTO<ActionDescriptor>>(){
                @Override
                public void onSuccess(FullServiceDTO<ActionDescriptor> result) {

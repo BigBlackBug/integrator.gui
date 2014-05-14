@@ -19,15 +19,14 @@ public class testmodule implements EntryPoint {
 
     private final IntegratorAsyncService service = GreetingServiceAsync.Util.getInstance();
 
-		public void onModuleLoad() {
+	public void onModuleLoad() {
 		final Button sendButton = new Button("Подрубиться");
 
 		final TextBox nameField = new TextBox();
 		final TextBox portField = new TextBox();
         final TextBox deployPathField = new TextBox();
-		nameField.setText("192.168.83.91");
-        portField.setText("18080");
-        deployPathField.setText("integrator");
+		nameField.setText("localhost");
+        portField.setText("8081");
 		final Label errorLabel = new Label();
 		sendButton.addStyleName("sendButton");
 
@@ -40,15 +39,10 @@ public class testmodule implements EntryPoint {
 		sendButton.setFocus(true);
 		final Button closeButton = new Button("Close");
 		closeButton.getElement().setId("closeButton");
-		final Label textToServerLabel = new Label();
-		final HTML serverResponseLabel = new HTML();
 		sendButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				errorLabel.setText("");
-				final String textToServer = nameField.getText();
-                textToServerLabel.setText(textToServer);
-				serverResponseLabel.setText("");
 				String portString = portField.getText();
                 int port;
                 try {
@@ -63,20 +57,41 @@ public class testmodule implements EntryPoint {
 
 					@Override
 					public void onSuccess(Void result) {
-                        service.getServiceList(
-								new IntegratorPacket<Void, DestinationDescriptor>(),
-								new GenericCallback<List<ServiceDTO>>() {
+						final FlexTable tb = new FlexTable();
+						final TextBox username = new TextBox();
+						final TextBox password = new TextBox();
+						tb.setWidget(0, 0, new Label("username"));
+						tb.setWidget(0, 1, username);
+						tb.setWidget(1, 0, new Label("pass"));
+						tb.setWidget(1, 1, password);
+						tb.setWidget(2, 0, new Button("login", new ClickHandler() {
+							@Override
+							public void onClick(ClickEvent event) {
+								service.login(username.getText(),password.getText(),new GenericCallback<Void>() {
 									@Override
-									public void onSuccess(List<ServiceDTO> result) {
-                                        ActionsPanel actionsPanel = new ActionsPanel();
-                                        RootPanel.get("actionsContainer").add(actionsPanel);
-                                        RootPanel.get("servicesContainer").add(
-                                                new ServicesPanel(result,actionsPanel));
-                                        RootPanel.get("deliveryButton").add(
-                                                new Button("Доставка",
-                                                           new DeliveryButtonClickHandler()));
+									public void onSuccess(Void result) {
+										IntegratorAsyncService.setUsername(username.getText());
+										RootPanel.get().remove(tb);
+										service.getServiceList(
+												new IntegratorPacket<Void, DestinationDescriptor>(),
+												new GenericCallback<List<ServiceDTO>>() {
+													@Override
+													public void onSuccess(List<ServiceDTO> result) {
+														ActionsPanel actionsPanel = new ActionsPanel();
+														RootPanel.get("actionsContainer").add(actionsPanel);
+														RootPanel.get("servicesContainer").add(
+																new ServicesPanel(result,actionsPanel));
+														RootPanel.get("deliveryButton").add(
+																new Button("Доставка",
+																           new DeliveryButtonClickHandler()));
+													}
+												});
 									}
 								});
+							}
+						}));
+						tb.getFlexCellFormatter().setColSpan(2, 0, 2);
+						RootPanel.get().add(tb);
 					}
 				};
                 service.initClient(nameField.getText(), deployPathField.getText(), port, callback);

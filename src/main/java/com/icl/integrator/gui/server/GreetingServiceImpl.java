@@ -6,9 +6,9 @@ import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
 import com.icl.integrator.gui.client.GreetingService;
-import com.icl.integrator.httpclient.IntegratorClientException;
 import com.icl.integrator.httpclient.IntegratorClientSettings;
 import com.icl.integrator.httpclient.IntegratorHttpClient;
+import com.icl.integrator.httpclient.exceptions.IntegratorClientException;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +17,7 @@ import java.util.Map;
  * The server side implementation of the RPC service.
  */
 @SuppressWarnings("serial")
-public class GreetingServiceImpl extends RemoteServiceServlet implements
-        GreetingService {
+public class GreetingServiceImpl extends RemoteServiceServlet implements GreetingService {
 
     private Client client = new Client();
 
@@ -31,14 +30,14 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
     @Override
     public <T extends DestinationDescriptor, Y extends ActionDescriptor>
     ResponseDTO<List<ActionEndpointDTO<Y>>> getSupportedActions(
-            IntegratorPacket<ServiceDTO, T> serviceDTO) throws IntegratorClientException {
+            IntegratorPacket<String, T> serviceDTO) throws IntegratorClientException {
         return client.getInstance().getSupportedActions(serviceDTO);
     }
 
     @Override
     public <ADType extends ActionDescriptor, DDType extends DestinationDescriptor>
     ResponseDTO<FullServiceDTO<ADType>> getServiceInfo(
-            IntegratorPacket<ServiceDTO, DDType> serviceDTO) throws IntegratorClientException {
+            IntegratorPacket<String, DDType> serviceDTO) throws IntegratorClientException {
         return client.getInstance().getServiceInfo(serviceDTO);
     }
 
@@ -57,7 +56,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public <T extends DestinationDescriptor, Y extends ActionDescriptor>
-    ResponseDTO<Map<String, ServiceAndActions<Y>>>
+    ResponseDTO<List<ServiceAndActions<Y>>>
     getServicesSupportingActionType(IntegratorPacket<ActionMethod, T> packet)
             throws IntegratorClientException {
         return client.getInstance().getServicesSupportingActionType(packet);
@@ -70,37 +69,20 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
         return client.getInstance().isAvailable(packet);
     }
 
-    public String greetServer(String input) throws IllegalArgumentException {
-        // Verify that the input is valid.
-        String serverInfo = getServletContext().getServerInfo();
-        String userAgent = getThreadLocalRequest().getHeader("User-Agent");
+	@Override
+	public void login(String username, String password) throws IntegratorClientException {
+		client.getInstance().login(username,password);
+	}
 
-        // Escape data from the client to avoid cross-site script vulnerabilities.
-        input = escapeHtml(input);
-        userAgent = escapeHtml(userAgent);
+	@Override
+	public void logout() throws IntegratorClientException {
+		client.getInstance().logout();
+	}
 
-        return "Hello, " + input + "!<br><br>I am running " + serverInfo
-                + ".<br><br>It looks like you are using:<br>" + userAgent;
-    }
-
-    /**
-     * Escape an html string. Escaping data received from the client helps to
-     * prevent cross-site script vulnerabilities.
-     *
-     * @param html the html string to escape
-     * @return the escaped string
-     */
-    private String escapeHtml(String html) {
-        if (html == null) {
-            return null;
-        }
-        return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
-    }
-
-    @Override
-    public void initClient(String host, String deployPath, int port) {
+	@Override
+    public void initClient(String host, String deployPath, int port)  throws IntegratorClientException {
         client.init(host, port, deployPath);
+		client.getInstance().ping();
     }
 
     @Override
@@ -112,7 +94,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 
     @Override
     public <T extends ActionDescriptor, Y extends DestinationDescriptor>
-    ResponseDTO<RegistrationResultDTO> registerService(
+    ResponseDTO<List<ActionRegistrationResultDTO>> registerService(
             IntegratorPacket<TargetRegistrationDTO<T>, Y> registrationDTO)
             throws IntegratorClientException {
         return client.getInstance().registerService(registrationDTO);

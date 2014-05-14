@@ -12,7 +12,7 @@ import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
 import com.icl.integrator.gui.client.util.Creator;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by e.shahmaev on 21.03.14.
@@ -24,9 +24,9 @@ public class ResponseHandlerSelectorPanel extends Composite
 
     private final ActionDisplayPanel actionsPanel;
 
-    private Map<String, ServiceAndActions<ActionDescriptor>> services;
+    private List<ServiceAndActions<ActionDescriptor>> services;
 
-    public ResponseHandlerSelectorPanel(Map<String,ServiceAndActions<ActionDescriptor>> serviceList) {
+    public ResponseHandlerSelectorPanel(List<ServiceAndActions<ActionDescriptor>> serviceList) {
         Grid panel = new Grid(1,2);
         this.services = serviceList;
         servicesLB = new ListBox();
@@ -36,7 +36,7 @@ public class ResponseHandlerSelectorPanel extends Composite
         servicesLB.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                refillViews(servicesLB.getValue(servicesLB.getSelectedIndex()));
+                refillViews(servicesLB.getSelectedIndex());
             }
         });
         this.actionsPanel = new ActionDisplayPanel();
@@ -46,22 +46,22 @@ public class ResponseHandlerSelectorPanel extends Composite
         initWidget(panel);
     }
 
-    private void refresh(Map<String, ServiceAndActions<ActionDescriptor>> services) {
+    private void refresh(List<ServiceAndActions<ActionDescriptor>> services) {
         this.services = services;
         servicesLB.clear();
-        for (Map.Entry<String, ServiceAndActions<ActionDescriptor>> service : services.entrySet()) {
-            String serviceName = service.getKey();
+        for (ServiceAndActions<ActionDescriptor> service : services) {
+            String serviceName = service.getService().getServiceName();
             servicesLB.addItem(serviceName);
         }
         if (!services.isEmpty()) {
             servicesLB.setSelectedIndex(0);
-            String value = servicesLB.getValue(0);
-            refillViews(value);
+            refillViews(0);
         }
     }
 
-    private void refillViews(String serviceName) {
-        actionsPanel.setActions(serviceName,services.get(serviceName).getActions());
+    private void refillViews(int index) {
+	    String serviceName = servicesLB.getValue(index);
+        actionsPanel.setActions(serviceName, services.get(index).getActions());
     }
 
     @Override

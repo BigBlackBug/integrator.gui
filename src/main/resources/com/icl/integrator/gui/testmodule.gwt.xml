@@ -23,6 +23,7 @@
     <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
     <inherits name='com.icl.integrator.Dto'/>
     <inherits name='com.icl.integrator.Api'/>
+    <inherits name='com.icl.integrator.Util'/>
     <inherits name='com.icl.integrator.Client'/>
     <!-- Other module inherits                                      -->
 

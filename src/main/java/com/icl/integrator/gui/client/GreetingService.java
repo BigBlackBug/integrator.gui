@@ -6,7 +6,7 @@ import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
-import com.icl.integrator.httpclient.IntegratorClientException;
+import com.icl.integrator.httpclient.exceptions.IntegratorClientException;
 
 import java.util.List;
 import java.util.Map;
@@ -17,16 +17,18 @@ import java.util.Map;
 @RemoteServiceRelativePath("greet")
 public interface GreetingService extends RemoteService {
 
-    String greetServer(String name) throws IllegalArgumentException;
+	public void login(String username, String password) throws IntegratorClientException;
 
-    public void initClient(String host, String deployPath, int port);
+	public void logout() throws IntegratorClientException;
+
+    public void initClient(String host, String deployPath, int port) throws IntegratorClientException ;
 
     public <T extends DestinationDescriptor>
     ResponseDTO<Map<String, ResponseDTO<String>>>
     deliver(IntegratorPacket<DeliveryDTO, T> delivery) throws IntegratorClientException;
 
     public <T extends ActionDescriptor, Y extends DestinationDescriptor>
-    ResponseDTO<RegistrationResultDTO> registerService(
+    ResponseDTO<List<ActionRegistrationResultDTO>> registerService(
             IntegratorPacket<TargetRegistrationDTO<T>, Y> registrationDTO)
             throws IntegratorClientException;
 
@@ -35,27 +37,27 @@ public interface GreetingService extends RemoteService {
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor>
     ResponseDTO<List<ActionEndpointDTO<Y>>> getSupportedActions(
-            IntegratorPacket<ServiceDTO, T> serviceDTO) throws IntegratorClientException;
+            IntegratorPacket<String, T> serviceDTO) throws IntegratorClientException;
 
     public <ADType extends ActionDescriptor,
             DDType extends DestinationDescriptor> ResponseDTO<FullServiceDTO<ADType>>
-    getServiceInfo(IntegratorPacket<ServiceDTO, DDType> serviceDTO)
-            throws IntegratorClientException;
+    getServiceInfo(IntegratorPacket<String, DDType> serviceDTO)
+		    throws IntegratorClientException;
 
-    public <T extends DestinationDescriptor, Y extends ActionDescriptor> ResponseDTO<Void> addAction(
-            IntegratorPacket<AddActionDTO<Y>, T> actionDTO) throws IntegratorClientException;
+	public <T extends DestinationDescriptor, Y extends ActionDescriptor>
+	ResponseDTO<Void> addAction(IntegratorPacket<AddActionDTO<Y>, T> actionDTO)
+			throws IntegratorClientException;
 
-    public <T extends DestinationDescriptor>
-    ResponseDTO<List<DeliveryActionsDTO>>
-    getActionsForDelivery(IntegratorPacket<Void, T> packet) throws IntegratorClientException;
+	public <T extends DestinationDescriptor>
+	ResponseDTO<List<DeliveryActionsDTO>>
+	getActionsForDelivery(IntegratorPacket<Void, T> packet) throws IntegratorClientException;
 
     public <T extends DestinationDescriptor, Y extends ActionDescriptor>
-    ResponseDTO<Map<String, ServiceAndActions<Y>>>
+    ResponseDTO<List<ServiceAndActions<Y>>>
     getServicesSupportingActionType(IntegratorPacket<ActionMethod, T> packet)
             throws IntegratorClientException;
 
     public <T extends DestinationDescriptor>
     ResponseDTO<Boolean>
-    isAvailable(IntegratorPacket<ServiceDestinationDescriptor,
-            T> packet)  throws IntegratorClientException;
+    isAvailable(IntegratorPacket<ServiceDestinationDescriptor,T> packet)  throws IntegratorClientException;
 }
