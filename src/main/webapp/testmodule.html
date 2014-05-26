@@ -14,8 +14,9 @@
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
     <link type="text/css" rel="stylesheet" href="testmodule.css">
+    <link rel="stylesheet" type="text/css" href="testmodule/reset.css">
 
-    <!--                                           -->
+      <!--                                           -->
     <!-- Any title is fine                         -->
     <!--                                           -->
     <title>Официальный Графический Интерфейс Интегратора</title>
@@ -48,38 +49,5 @@
 
     <h1>Официальный Графический Интерфейс Интегратора</h1>
 
-    <table align="center">
-        <tr>
-            <td colspan="3" style="font-weight:bold; text-align: center;">Адрес интегратора</td>
-        </tr>
-        <tr>
-            <td align="center">Хост</td>
-            <td align="center">Порт</td>
-            <td align="center">Путь</td>
-        </tr>
-        <tr>
-            <td id="hostContainer"></td>
-            <td id="portContainer"></td>
-            <td id="deployPathContainer"></td>
-            <td id="initClientContainer"></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="color:red;" id="errorLabelContainer"></td>
-        </tr>
-    </table>
-
-    <table align="center" id="mainTable" >
-        <tr>
-            <td colspan="2" align="center" id="deliveryButton"></td>
-        </tr>
-        <tr>
-            <td id="actionPanelServiceTitle" align="center" style="font-weight:bold;">Сервисы интегратора</td>
-            <td align="center" style="font-weight:bold;">Действия сервиса</td>
-        </tr>
-        <tr>
-            <td valign="top" id="servicesContainer" height="100%"></td>
-            <td valign="top" id="actionsContainer" height="100%"></td>
-        </tr>
-    </table>
   </body>
 </html>

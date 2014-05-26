@@ -8,6 +8,7 @@ import com.icl.integrator.dto.registration.*;
 import com.icl.integrator.gui.client.GreetingService;
 import com.icl.integrator.httpclient.IntegratorClientSettings;
 import com.icl.integrator.httpclient.IntegratorHttpClient;
+import com.icl.integrator.httpclient.exceptions.AuthException;
 import com.icl.integrator.httpclient.exceptions.IntegratorClientException;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements Greetin
     }
 
 	@Override
-	public void login(String username, String password) throws IntegratorClientException {
+	public void login(String username, String password) throws IntegratorClientException,AuthException {
 		client.getInstance().login(username,password);
 	}
 

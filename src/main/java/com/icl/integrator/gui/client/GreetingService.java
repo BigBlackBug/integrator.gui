@@ -6,6 +6,7 @@ import com.icl.integrator.dto.*;
 import com.icl.integrator.dto.destination.DestinationDescriptor;
 import com.icl.integrator.dto.destination.ServiceDestinationDescriptor;
 import com.icl.integrator.dto.registration.*;
+import com.icl.integrator.httpclient.exceptions.AuthException;
 import com.icl.integrator.httpclient.exceptions.IntegratorClientException;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.Map;
 @RemoteServiceRelativePath("greet")
 public interface GreetingService extends RemoteService {
 
-	public void login(String username, String password) throws IntegratorClientException;
+	public void login(String username, String password) throws IntegratorClientException,AuthException;
 
 	public void logout() throws IntegratorClientException;
 

@@ -7,7 +7,8 @@
     <inherits name='com.sencha.gxt.ui.GXT' />
 
     <stylesheet src="reset.css" />
-    <set-property name="gxt.user.agent" value="chrome" />
+    <set-property name="gxt.user.agent" value="gecko1_8" />
+
     <set-property name="user.agent.os" value="windows" />
     <!-- We need the JUnit module in the main module,               -->
     <!-- otherwise eclipse complains (Google plugin bug?)           -->

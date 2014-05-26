@@ -6,7 +6,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.icl.integrator.dto.*;
@@ -16,7 +15,9 @@ import com.icl.integrator.dto.registration.*;
 import com.icl.integrator.gui.client.GenericCallback;
 import com.icl.integrator.gui.client.GreetingService;
 import com.icl.integrator.gui.client.GreetingServiceAsync;
+import com.icl.integrator.httpclient.exceptions.AuthException;
 import com.icl.integrator.httpclient.exceptions.IntegratorClientException;
+import com.sencha.gxt.widget.core.client.Dialog;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class IntegratorAsyncService{
 	}
 
 	public void login(String username, String password, AsyncCallback<Void> async)
-			throws IntegratorClientException {
+			throws IntegratorClientException,AuthException {
 		service.login(username, password, new LoadingCallback<Void>(async));
 	}
 
@@ -127,7 +128,7 @@ public class IntegratorAsyncService{
 		    async.onFailure(caught);
 		    Throwable cause = caught.getCause();
 		    String message = (cause != null ? cause.toString() : caught.toString());
-		    createDialog(message, null, "Неудачный запрос к интегратору").center();
+		    createDialog(message, null, "Неудачный запрос к интегратору").show();
 	    }
 
 	    @Override
@@ -147,7 +148,7 @@ public class IntegratorAsyncService{
 
 	    private AppLoadingView createLoadingView() {
 		    final AppLoadingView loading = new AppLoadingView();
-		    loading.center();
+		    loading.show();
 		    return loading;
 	    }
 
@@ -169,16 +170,13 @@ public class IntegratorAsyncService{
 
 	private static class AbstractCallback<T> extends HasView<T>{
 
-		protected DialogBox createDialog(final String message, final String extraMessage,
+		protected Dialog createDialog(final String message, final String extraMessage,
 		                                 String dialogHeader) {
-			final DialogBox dialogBox = new DialogBox();
-			final Button closeButton = new Button("Не верю!");
-			closeButton.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					dialogBox.hide();
-				}
-			});
-			closeButton.getElement().setId("closeButton");
+			final Dialog dialog = new Dialog();
+			dialog.setWidth(600);
+			dialog.setBlinkModal(true);
+			dialog.setModal(true);
+			dialog.setPredefinedButtons(Dialog.PredefinedButton.CLOSE);
 			final VerticalPanel dialogVPanel = new VerticalPanel();
 			dialogVPanel.addStyleName("dialogVPanel");
 			dialogVPanel.add(new HTML("<b>Суть:</b>"));
@@ -197,10 +195,10 @@ public class IntegratorAsyncService{
 						w.setWordWrap(true);
 						dialogVPanel.add(w);
 						button.setVisible(false);
-						dialogBox.getElement().getStyle().setProperty("width", "auto");
+						dialog.getElement().getStyle().setProperty("width", "auto");
 						Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
 							public void execute() {
-								dialogBox.center();
+								dialog.show();
 							}
 						});
 					}
@@ -210,11 +208,10 @@ public class IntegratorAsyncService{
 			}
 
 			dialogVPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
-			dialogVPanel.add(closeButton);
-			dialogBox.setWidget(dialogVPanel);
+			dialog.setWidget(dialogVPanel);
 			dialogVPanel.setSpacing(3);
-			dialogBox.setText(dialogHeader);
-			return dialogBox;
+			dialog.setHeadingText(dialogHeader);
+			return dialog;
 		}
 	}
 
@@ -232,7 +229,7 @@ public class IntegratorAsyncService{
             async.onFailure(caught);
             Throwable cause = caught.getCause();
             String message = (cause != null ? cause.toString() : caught.toString());
-            createDialog(message, null, "Неудачный запрос к интегратору").center();
+            createDialog(message, null, "Неудачный запрос к интегратору").show();
         }
 
         @Override
@@ -246,7 +243,7 @@ public class IntegratorAsyncService{
                 }
                 String errorMessage = result.getError().getErrorMessage();
                 createDialog(errorMessage, result.getError().getDeveloperMessage(),
-                             "Ответ от интегратора").center();
+                             "Ответ от интегратора").show();
             }
         }
 
