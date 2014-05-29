@@ -13,6 +13,7 @@ public class testmodule implements EntryPoint {
 	@Override
 	public void onModuleLoad() {
 		viewport = new Viewport();
+//		RootPanel.get().add(new MainContentPanel());
 		new PingDialog().show();
 	}
 //	public void onModuleLoad() {

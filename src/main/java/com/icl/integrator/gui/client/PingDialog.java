@@ -44,7 +44,7 @@ public final class PingDialog extends AbstractIntegratorDialog {
 		                                                           DEFAULT_MARGINS)
 		);
 		dialog.setWidget(hlc);
-		final TextButton ok = dialog.getButtonById("OK");
+		final TextButton ok = dialog.getButton(PredefinedButton.OK);
 		ok.setText("Пингануть");
 		ok.addSelectHandler(new SelectEvent.SelectHandler() {
 			@Override

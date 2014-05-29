@@ -14,9 +14,9 @@
 
     <properties>
         <!-- Convenience property to set the GWT version -->
-        <gwtVersion>2.5.0</gwtVersion>
+        <gwtVersion>2.6.0</gwtVersion>
         <integrator.version>1.6-SNAPSHOT</integrator.version>
-        <gxt.version>3.0.1</gxt.version>
+        <gxt.version>3.1.0-beta</gxt.version>
         <!-- GWT needs at least java 1.5 -->
         <webappDirectory>${project.build.directory}/${project.build.finalName}
         </webappDirectory>
@@ -82,11 +82,11 @@
             <version>${integrator.version}</version>
         </dependency>
             <!-- GXT -->
-            <dependency>
-                <groupId>com.sencha.gxt</groupId>
-                <artifactId>gxt</artifactId>
-                <version>${gxt.version}</version>
-            </dependency>
+        <dependency>
+            <groupId>com.sencha.gxt</groupId>
+            <artifactId>gxt</artifactId>
+            <version>${gxt.version}</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>com.sencha.gxt</groupId>-->
             <!--<artifactId>gxt</artifactId>-->

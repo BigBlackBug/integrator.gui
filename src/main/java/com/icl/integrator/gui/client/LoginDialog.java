@@ -1,6 +1,8 @@
 package com.icl.integrator.gui.client;
 
+import com.google.gwt.user.client.ui.RootPanel;
 import com.icl.integrator.gui.client.components.IntegratorAsyncService;
+import com.icl.integrator.gui.client.gxt.MainContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -12,6 +14,10 @@ import com.sencha.gxt.widget.core.client.info.Info;
  */
 public class LoginDialog extends AbstractIntegratorDialog {
 
+	private static final String DEFAULT_LOGIN = "user";
+
+	private static final String DEFAULT_PASSWORD = "pass";
+
 	private final IntegratorAsyncService service = GreetingServiceAsync.Util.getInstance();
 
 	private final TextField loginTF;
@@ -22,7 +28,9 @@ public class LoginDialog extends AbstractIntegratorDialog {
 		super("Логин");
 		HorizontalLayoutContainer hlc = new HorizontalLayoutContainer();
 		loginTF = new TextField();
+		loginTF.setText(DEFAULT_LOGIN);
 		passTF = new TextField();
+		passTF.setText(DEFAULT_PASSWORD);
 		hlc.add(createLabel("Логин", loginTF),
 		        new HorizontalLayoutContainer.HorizontalLayoutData(0.5, 1,
 		                                                           DEFAULT_MARGINS)
@@ -33,7 +41,7 @@ public class LoginDialog extends AbstractIntegratorDialog {
 		);
 		dialog.setWidget(hlc);
 		dialog.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
-		TextButton changeServer = dialog.getButtonById("OK");
+		TextButton changeServer = dialog.getButton(PredefinedButton.OK);
 		changeServer.setText("Другой сервер");
 		changeServer.addSelectHandler(new SelectEvent.SelectHandler() {
 			@Override
@@ -42,7 +50,7 @@ public class LoginDialog extends AbstractIntegratorDialog {
 				new PingDialog().show();
 			}
 		});
-		final TextButton loginButton = dialog.getButtonById("CANCEL");
+		final TextButton loginButton = dialog.getButton(PredefinedButton.CANCEL);
 		loginButton.setText("Залогиниться");
 		loginButton.addSelectHandler(new SelectEvent.SelectHandler() {
 			@Override
@@ -52,6 +60,7 @@ public class LoginDialog extends AbstractIntegratorDialog {
 					@Override
 					public void onSuccess(Void aVoid) {
 						Info.display("залогинились", "ура");
+						RootPanel.get().add(new MainContentPanel());
 					}
 
 					@Override
