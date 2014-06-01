@@ -17,6 +17,7 @@ import com.icl.integrator.gui.client.GreetingService;
 import com.icl.integrator.gui.client.GreetingServiceAsync;
 import com.icl.integrator.httpclient.exceptions.AuthException;
 import com.icl.integrator.httpclient.exceptions.IntegratorClientException;
+import com.sencha.gxt.widget.core.client.Component;
 import com.sencha.gxt.widget.core.client.Dialog;
 
 import java.util.List;
@@ -111,16 +112,27 @@ public class IntegratorAsyncService{
     public <T extends DestinationDescriptor>
     void
     isAvailable(IntegratorPacket<ServiceDestinationDescriptor,T> packet, AsyncCallback<Boolean> async){
-        service.isAvailable(packet,new IntegratorLoadingCallback<Boolean>(async));
+	    service.isAvailable(packet, new IntegratorLoadingCallback<Boolean>(async));
     }
+
+	public <T extends DestinationDescriptor>
+	void
+	isAvailable(IntegratorPacket<ServiceDestinationDescriptor,T> packet, AsyncCallback<Boolean> async,Component component){
+		service.isAvailable(packet, new IntegratorLoadingCallback<Boolean>(async,component));
+	}
 
     private static final class LoadingCallback<T> extends AbstractCallback<T> {
 
         private final AsyncCallback<T> async;
 
-        private LoadingCallback(AsyncCallback<T> async) {
-            this.async = async;
-        }
+	    private LoadingCallback(AsyncCallback<T> async, Component component) {
+		    super(component);
+		    this.async = async;
+	    }
+
+	    private LoadingCallback(AsyncCallback<T> async) {
+		    this.async = async;
+	    }
 
 	    @Override
 	    public void onFailure(Throwable caught) {
@@ -140,20 +152,25 @@ public class IntegratorAsyncService{
 
     private static class HasView<T> implements AsyncCallback<T> {
 
-	    private final AppLoadingView loading;
+	    private final Component loading;
+
+	    protected HasView(Component component) {
+		    this.loading = component;
+		    loading.mask("Загрузка");
+	    }
 
 	    protected HasView() {
-		    this.loading = createLoadingView();
+		    this(new AppLoadingView());
 	    }
 
-	    private AppLoadingView createLoadingView() {
-		    final AppLoadingView loading = new AppLoadingView();
-		    loading.show();
-		    return loading;
-	    }
+//	    private AppLoadingView createLoadingView() {
+//		    final AppLoadingView loading = new AppLoadingView();
+//		    loading.mask();
+//		    return loading;
+//	    }
 
 	    protected void hide() {
-		    loading.hide();
+		    loading.unmask();
 	    }
 
 	    @Override
@@ -169,6 +186,13 @@ public class IntegratorAsyncService{
     }
 
 	private static class AbstractCallback<T> extends HasView<T>{
+
+		protected AbstractCallback(Component component) {
+			super(component);
+		}
+
+		protected AbstractCallback() {
+		}
 
 		protected Dialog createDialog(final String message, final String extraMessage,
 		                                 String dialogHeader) {
@@ -219,12 +243,17 @@ public class IntegratorAsyncService{
 
         private final AsyncCallback<T> async;
 
-        private IntegratorLoadingCallback(AsyncCallback<T> async) {
-            this.async = async;
-        }
+	    private IntegratorLoadingCallback(AsyncCallback<T> async, Component component) {
+		    super(component);
+		    this.async = async;
+	    }
 
-        @Override
-        public void onFailure(Throwable caught) {
+	    private IntegratorLoadingCallback(AsyncCallback<T> async) {
+		    this.async = async;
+	    }
+
+	    @Override
+	    public void onFailure(Throwable caught) {
             super.onFailure(caught);
             async.onFailure(caught);
             Throwable cause = caught.getCause();
