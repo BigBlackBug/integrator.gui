@@ -7,7 +7,6 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * Created by BigBlackBug on 26.05.2014.
@@ -59,7 +58,6 @@ public class LoginDialog extends AbstractIntegratorDialog {
 				service.login(loginTF.getText(), passTF.getText(), new GenericCallback<Void>() {
 					@Override
 					public void onSuccess(Void aVoid) {
-						Info.display("залогинились", "ура");
 						RootPanel.get().add(new MainContentPanel());
 					}
 

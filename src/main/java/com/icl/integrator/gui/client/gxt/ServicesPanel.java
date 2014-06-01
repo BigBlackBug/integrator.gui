@@ -9,6 +9,8 @@ import com.icl.integrator.dto.ServiceDTO;
 import com.icl.integrator.dto.registration.ActionDescriptor;
 import com.icl.integrator.dto.registration.ActionEndpointDTO;
 import com.icl.integrator.gui.client.GenericCallback;
+import com.icl.integrator.gui.client.util.CreationException;
+import com.icl.integrator.gui.client.util.Creator;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewSelectionModel;
@@ -22,7 +24,7 @@ import java.util.List;
 /**
  * Created by BigBlackBug on 26.05.2014.
  */
-public class ServicesPanel implements IsWidget {
+public class ServicesPanel implements IsWidget, Creator<ServiceDTO> {
 
 	private final ListView<ServiceDTO, String> listView;
 
@@ -32,22 +34,8 @@ public class ServicesPanel implements IsWidget {
 
 	private HorizontalLayoutContainer hlc;
 
-	private Refreshable<List<ActionEndpointDTO<ActionDescriptor>>> actionDisplay;
-
-	public ServicesPanel(final Refreshable<List<ActionEndpointDTO<ActionDescriptor>>> actionDisplay) {
-		this.actionDisplay = actionDisplay;
-		store = new CachingStore();
-		listView = new ListView<>(
-				store,
-				new ImmutableValueProvider<ServiceDTO, String>() {
-					@Override
-					public String getValue(ServiceDTO object) {
-						return object.getServiceName();
-					}
-				}
-		);
-		store.setListView(listView);
-		store.reload();
+	public void setActionDisplay(
+			final Refreshable<List<ActionEndpointDTO<ActionDescriptor>>> actionDisplay) {
 		listView.getSelectionModel().addSelectionHandler(new SelectionHandler<ServiceDTO>() {
 			@Override
 			public void onSelection(SelectionEvent<ServiceDTO> event) {
@@ -68,6 +56,21 @@ public class ServicesPanel implements IsWidget {
 				);
 			}
 		});
+	}
+
+	public ServicesPanel() {
+		store = new CachingStore();
+		listView = new ListView<>(
+				store,
+				new ImmutableValueProvider<ServiceDTO, String>() {
+					@Override
+					public String getValue(ServiceDTO object) {
+						return object.getServiceName();
+					}
+				}
+		);
+		store.setListView(listView);
+		store.reload();
 		hlc = new HorizontalLayoutContainer();
 		serviceInfoPanel = new ServiceInfoPanel();
 
@@ -90,5 +93,10 @@ public class ServicesPanel implements IsWidget {
 	@Override
 	public Widget asWidget() {
 		return hlc;
+	}
+
+	@Override
+	public ServiceDTO create() throws CreationException {
+		return listView.getSelectionModel().getSelectedItem();
 	}
 }

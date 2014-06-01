@@ -45,7 +45,7 @@ public final class PingDialog extends AbstractIntegratorDialog {
 		);
 		dialog.setWidget(hlc);
 		final TextButton ok = dialog.getButton(PredefinedButton.OK);
-		ok.setText("Пингануть");
+		ok.setText("Подключиться");
 		ok.addSelectHandler(new SelectEvent.SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
@@ -54,7 +54,7 @@ public final class PingDialog extends AbstractIntegratorDialog {
                 try {
                     port = FieldVerifier.parseNumber(portString, 1, 65535);
                 }catch(GuiException ex){
-	                Info.display("Херовый порт", ex.getMessage());
+	                Info.display("У Вас херовый порт", ex.getMessage());
                     return;
                 }
 				dialog.hide();

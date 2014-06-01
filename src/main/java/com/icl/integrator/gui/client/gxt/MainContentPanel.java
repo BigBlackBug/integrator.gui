@@ -47,9 +47,10 @@ public class MainContentPanel implements IsWidget {
 		vlc.add(delivery, new VerticalLayoutContainer.VerticalLayoutData(1, -1));
 
 		HorizontalLayoutContainer panels = new HorizontalLayoutContainer();
-		ActionsPanel actionsPanel = new ActionsPanel();
-		panels.add(new ServicesPanel(actionsPanel),
-		           new HorizontalLayoutContainer.HorizontalLayoutData(0.5, 1));
+		ServicesPanel servicesPanel = new ServicesPanel();
+		ActionsPanel actionsPanel = new ActionsPanel(servicesPanel);
+		servicesPanel.setActionDisplay(actionsPanel);
+		panels.add(servicesPanel, new HorizontalLayoutContainer.HorizontalLayoutData(0.5, 1));
 		panels.add(actionsPanel, new HorizontalLayoutContainer.HorizontalLayoutData(0.5, 1));
 		vlc.add(panels, new VerticalLayoutContainer.VerticalLayoutData(1, 1));
 		return vlc;
