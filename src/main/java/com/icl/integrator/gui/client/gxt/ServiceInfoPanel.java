@@ -56,36 +56,9 @@ public class ServiceInfoPanel implements Refreshable<FullServiceDTO> {
 		container.add(new Label("Тип сервиса"), layoutData);
 		container.add(serviceType, layoutData);
 		//TODO init
-//		container.add(descriptor);
+		descriptor = new EndpointDescriptorPanel();
+		container.add(descriptor);
 
-//		vlc = new VerticalLayoutContainer();
-//
-//		vlc.add(new Label("название сервиса"));
-//		vlc.add(serviceName);
-//		vlc.add(new Label("Тип сервиса"));
-//		vlc.add(serviceType);
-
-//		descrit
-//		vlc.add(descriptions);
-//		if (endpointType == EndpointType.HTTP) {
-//			HttpEndpointDescriptorDTO descriptor =
-//					(HttpEndpointDescriptorDTO) serviceEndpoint;
-//			String host = descriptor.getHost();
-//			int port = descriptor.getPort();
-//			vlc.add(new Label("host"));
-//			vlc.add(new Label(host));
-//			vlc.add(new Label("port"));
-//			vlc.add(new Label(String.valueOf(port)));
-//		} else {
-//			JMSEndpointDescriptorDTO
-//					descriptor = (JMSEndpointDescriptorDTO) serviceEndpoint;
-//			String connectionFactory = descriptor.getConnectionFactory();
-//			Map<String, String> jndiProperties = descriptor.getJndiProperties();
-//			vlc.add(new Label("CF"));
-//			vlc.add(new Label(connectionFactory));
-//			vlc.add(new Label("PROPS"));
-//			vlc.add(new Label(String.valueOf(jndiProperties)));
-//		}
 		container.add(new Label("доставка"));
 		container.add(new Label("количество повторов"), layoutData);
 		container.add(retryNumberLabel, layoutData);
@@ -108,6 +81,7 @@ public class ServiceInfoPanel implements Refreshable<FullServiceDTO> {
 		retryNumberLabel.setText(String.valueOf(deliverySettings.getRetryNumber()));
 		retryDelayLabel.setText(String.valueOf(deliverySettings.getRetryDelay()));
 		creatorLabel.setText(item.getCreatorName());
+		descriptor.refresh(item.getEndpoint());
 		cp.clear();
 		cp.add(container);
 		cp.forceLayout();
